@@ -6,3 +6,5 @@ After installing a new Astal library, enter
 ags types
 ```
 to generate the types
+## Preview
+![Preview](./preview.png)
