@@ -1,0 +1,43 @@
+@use 'colours';
+@use 'base';
+
+.topleft-container {
+  @extend .container;
+  padding-left: base.$pad;
+}
+
+.ws-text {
+    @extend .text;
+    min-width: 166px; /* (6 * 2) * 10 + 4 * 9 + 10 */
+}
+
+.ws-circle-container {
+  @extend .invisible;
+  min-height: 8px;
+}
+
+.ws-circle {
+    border: 6px solid rgba(white, 1);
+    background: white;
+    border-radius: 8px;
+}
+
+.ws-circle-window {
+    @extend .ws-circle;
+    border: 6px solid rgba(colours.$miku, 1);
+    background: colours.$miku;
+}
+
+.ws-circle-active {
+    @extend .ws-circle;
+    min-width: 10px;
+}
+
+.ws-circle-window-active {
+    @extend .ws-circle-active;
+    @extend .ws-circle-window;
+}
+.clock {
+    @extend .text;
+    @extend .invisible;
+}

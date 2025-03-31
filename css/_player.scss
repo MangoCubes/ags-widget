@@ -1,0 +1,26 @@
+@use 'base';
+@use 'colours';
+
+.musicText {
+    @extend .text;
+    // padding-left: $pad * 2;
+    padding-right: base.$pad * 2;
+    text-shadow: 0px 0px 2px colours.$highlight2, 0px 0px 2px colours.$highlight2;
+}
+
+.musicSubText {
+    @extend .text;
+    font-size: base.$bodySize;
+    text-shadow: 0px 0px 2px colours.$highlight2, 0px 0px 2px colours.$highlight2;
+}
+
+.focusLossDetection {
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
+}
+
+.playerInfo {
+    @extend .text;
+    font-size: base.$bodySize;
+}

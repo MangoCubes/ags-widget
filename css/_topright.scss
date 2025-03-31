@@ -1,0 +1,33 @@
+@use 'colours';
+@use 'base';
+
+.topright-container {
+  @extend .container;
+  padding-right: base.$gap;
+}
+
+.volume-progress {
+    @extend .progress;
+    color: colours.$highlight2;
+}
+
+.volume-icon {
+  @extend .icon;
+    color: colours.$highlight2;
+}
+
+.battery-progress {
+    @extend .progress;
+    color: colours.$len;
+}
+
+.battery-icon {
+  @extend .icon;
+    color: colours.$len;
+}
+
+.wrapper {
+  @extend .invisible;
+  padding-top: base.$gap;
+  padding-bottom: base.$gap;
+}

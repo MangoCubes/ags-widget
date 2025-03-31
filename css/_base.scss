@@ -1,0 +1,62 @@
+@use 'colours';
+
+$widgetHeight: 40px;
+$fontSize: 18px;
+$smallFontSize: 12px;
+$bodySize: 12px;
+$iconSize: 18px;
+$pad: 8px;
+$windowMargin: 10px;
+$popupHeight: 24px;
+$border: 4px;
+$gap: 4px;
+
+.text {
+    font-family: BankGothic;
+    font-size: $fontSize;
+    color: white;
+    text-shadow: 0px 0px 2px colours.$miku, 0px 0px 2px colours.$miku;
+}
+
+.small-text {
+  @extend .text;
+
+  font-size: $smallFontSize;
+}
+
+.invisible {
+    background-color: transparent;
+}
+
+.border {
+    //box-shadow: 0px 0px 10px 3px rgba(71,200,192,0.75), 0px 0px 10px 3px rgba(71,200,192,0.75) inset;
+    border: $border solid rgba(colours.$miku, 1);
+}
+
+.debug {
+    border: 1px solid rgba(red, 1);
+}
+
+.container {
+  @extend .invisible;
+  min-height: $widgetHeight;
+}
+
+.test-box {
+  @extend .debug;
+  background-color: green;
+  min-height: 50px;
+  min-width: 50px;
+}
+
+.icon {
+  font-size: $iconSize;
+}
+
+.progress {
+    @extend .invisible;
+    min-width: $widgetHeight - ($gap * 2);
+    min-height: $widgetHeight - ($gap * 2);
+    font-size: 4px;
+    margin-top: 16px;
+}

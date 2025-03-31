@@ -1,0 +1,11 @@
+@use 'base';
+
+.window-bar-container {
+  @extend .invisible;
+}
+
+.bar {
+    @extend .border;
+    background: rgba(black, 0.7);
+    margin: 2px;
+}

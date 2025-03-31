@@ -1,0 +1,88 @@
+@use 'base';
+@use 'colours';
+@use 'player';
+@use 'topleft';
+@use 'bar';
+@use 'topright';
+
+.pad {
+    @extend .invisible;
+    min-width: base.$pad;
+}
+
+
+.workspacesCircles {
+    min-width: 180px;
+}
+
+.batteryLevel {
+    @extend .invisible;
+    min-width: base.$widgetHeight;
+    min-height: base.$widgetHeight;
+    font-size: 2px;
+    color: colours.$len;
+}
+
+.batteryLevelIcon {
+    color: colours.$len;
+    font-size: base.$iconSize;
+}
+
+
+
+.volumeLevelIcon {
+    color: colours.$highlight2;
+    font-size: base.$iconSize;
+}
+
+.playerBar {
+    @extend .invisible;
+    min-width: 300px;
+}
+
+.notificationIcon {
+    color: colours.$miku;
+}
+
+.noNotificationIcon {
+    color: colours.$bgWidgets;
+}
+
+.sideBox {
+    @extend .invisible;
+    margin-right: base.$windowMargin;
+}
+
+.barContent {
+    @extend .invisible;
+}
+
+
+.borderSides {
+    border-left: base.$border solid rgba(colours.$miku, 1);
+    border-right: base.$border solid rgba(colours.$miku, 1);
+}
+
+
+.popupBox {
+    @extend .bar;
+    min-height: base.$popupHeight;
+    padding: base.$pad;
+}
+
+.notificationBox {
+    @extend .bar;
+    min-height: base.$popupHeight;
+    padding: base.$pad;
+}
+
+.body {
+    @extend .text;
+    font-size: base.$bodySize;
+}
+
+.calendar {
+    @extend .bar;
+    @extend .text;
+    // padding: $pad;
+}
