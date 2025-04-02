@@ -1,7 +1,7 @@
 import { Gtk } from "astal/gtk3";
 import { CircularProgress, Icon, Overlay } from "astal/gtk3/widget";
 
-export const IconCircular = (props: { value: number, icon: string, iconClass: string, circularClass: string }) => {
+export const IconCircular = (props: { value: number, icon: string, iconClass: string, circularClass: string, ringClass: string }) => {
 	return (
 		<Overlay
 			valign={Gtk.Align.CENTER}
@@ -15,6 +15,7 @@ export const IconCircular = (props: { value: number, icon: string, iconClass: st
 				endAt={0.75}
 				value={props.value}
 			/>
+			<box className={props.ringClass} />
 			<Icon
 				className={props.iconClass}
 				icon={props.icon}

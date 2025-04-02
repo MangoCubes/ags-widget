@@ -5,13 +5,13 @@
     @extend .text;
     // padding-left: $pad * 2;
     padding-right: base.$pad * 2;
-    text-shadow: 0px 0px 2px colours.$highlight2, 0px 0px 2px colours.$highlight2;
+    text-shadow: 0px 0px 2px colours.$teto, 0px 0px 2px colours.$teto;
 }
 
 .musicSubText {
     @extend .text;
     font-size: base.$bodySize;
-    text-shadow: 0px 0px 2px colours.$highlight2, 0px 0px 2px colours.$highlight2;
+    text-shadow: 0px 0px 2px colours.$teto, 0px 0px 2px colours.$teto;
 }
 
 .focusLossDetection {

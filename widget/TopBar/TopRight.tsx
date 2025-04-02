@@ -30,6 +30,7 @@ const Battery = (b: AstalBattery.Device) => {
 					circularClass="battery-progress"
 					value={isBattery ? percentage : 1}
 					icon={isBattery ? icon : "battery-full-symbolic"}
+					ringClass="battery-background"
 				/>
 			</EventBox>
 		);
@@ -58,6 +59,7 @@ const Volume = (w: WirePlumber.Wp) => {
 					circularClass="volume-progress"
 					value={volume}
 					icon={volume ? icon : "audio-volume-muted-symbolic"}
+					ringClass="volume-background"
 				/>
 			</EventBox>
 
