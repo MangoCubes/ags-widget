@@ -13,7 +13,7 @@ export const TopBar = (gdkmonitor: Gdk.Monitor) => {
 			anchor={TOP | LEFT | RIGHT}
 			application={App}>
 			<centerbox
-				className="bar"
+				className="window-bar"
 			>
 				<TopLeft />
 				<box />
