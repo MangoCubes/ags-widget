@@ -99,6 +99,14 @@ const Clock = () => {
 // 	};
 // 	return Variable.derive([bind(hyprland, "focused_client")])().as(comps);
 // }
+const Logo = () => {
+	return (
+		<label
+			className="clock"
+			label=""
+		/>
+	);
+}
 
 export const TopLeft = () => {
 	return (
@@ -107,6 +115,7 @@ export const TopLeft = () => {
 			className="topleft-container"
 			vexpand={false}
 		>
+			<Logo />
 			<Clock />
 			{/**/}
 			<box />
