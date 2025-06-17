@@ -1,22 +1,36 @@
-import GObject, { register, GLib } from "astal/gobject"
+import GObject, { register, GLib, property } from "astal/gobject"
 import { exec } from "astal/process"
 import Gio from "gi://Gio?version=2.0"
 
 const get = (args: string) => exec(`niri msg -j ${args}`);
 
-type Workspace = {
-	id: number;
-	idx: number;
-	name: string;
-	output: string;
-	is_urgent: boolean;
-	is_active: boolean;
-	is_focused: boolean;
-	active_window_id: number | null;
-};
+export namespace Niri {
+
+	export type Workspace = {
+		id: number;
+		idx: number;
+		name: string;
+		output: string;
+		is_urgent: boolean;
+		is_active: boolean;
+		is_focused: boolean;
+		active_window_id: number | null;
+	};
+
+	export type FocusedWindow = {
+		id: number,
+		title: string,
+		app_id: string,
+		pid: number,
+		workspace_id: number,
+		is_focused: boolean,
+		is_floating: boolean,
+		is_urgent: boolean
+	};
+}
 
 @register({ GTypeName: "Niri" })
-export default class Niri extends GObject.Object {
+export class Niri extends GObject.Object {
 	static instance: Niri
 	static get_default() {
 		if (!this.instance)
@@ -25,18 +39,24 @@ export default class Niri extends GObject.Object {
 		return this.instance
 	}
 
-	#workspaces: Workspace[] = JSON.parse(get("workspaces"));
+	#workspaces: Niri.Workspace[] = JSON.parse(get("workspaces"));
 
-	#focusedWindow = JSON.parse(get("focused-window"));
+	#focusedWindow: Niri.FocusedWindow = JSON.parse(get("focused-window"));
 
+	@property()
 	get workspaces() { return this.#workspaces };
+	@property()
 	get focusedWindow() { return this.#focusedWindow };
 
 	handle(msg: any) {
+		print(`Received: ${JSON.stringify(msg)}`);
 		if (msg["Ok"]) return;
 		else if (msg["WorkspacesChanged"]) {
-			this.#workspaces = msg["WorkspacesChanged"]["workspaces"] as Workspace[];
+			this.#workspaces = msg["WorkspacesChanged"]["workspaces"] as Niri.Workspace[];
 			this.notify("workspaces");
+		} else if (msg["WindowFocusChanged"]) {
+			this.#focusedWindow = JSON.parse(get("focused-window"));
+			this.notify("focusedWindow");
 		}
 	}
 
@@ -57,8 +77,8 @@ export default class Niri extends GObject.Object {
 					let line = stdoutStream.read_line_finish_utf8(res)[0];
 
 					if (line !== null) {
-						print(`READ: ${line}`);
 						this.handle(JSON.parse(line));
+						// Yes, this doesn't create stack overflow error
 						eventLoop();
 					}
 				} catch (e) {
