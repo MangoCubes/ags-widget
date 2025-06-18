@@ -27,6 +27,17 @@ export namespace Niri {
 		is_floating: boolean,
 		is_urgent: boolean
 	};
+
+	export type Window = {
+		id: number,
+		title: string,
+		app_id: string,
+		pid: number,
+		workspace_id: number,
+		is_focused: boolean,
+		is_floating: boolean,
+		is_urgent: boolean,
+	};
 }
 
 @register({ GTypeName: "Niri" })
@@ -40,23 +51,30 @@ export class Niri extends GObject.Object {
 	}
 
 	#workspaces: Niri.Workspace[] = JSON.parse(get("workspaces"));
+	#focusedWorkspace: Niri.Workspace | null = null;
+	#windows: Niri.Window[] = JSON.parse(get("windows"));
+	#focusedWindow: Niri.FocusedWindow | null = JSON.parse(get("focused-window"));
 
-	#focusedWindow: Niri.FocusedWindow = JSON.parse(get("focused-window"));
-
-	@property()
+	@property(Object)
 	get workspaces() { return this.#workspaces };
-	@property()
+	@property(Object)
+	get focusedWorkspace() { return this.#focusedWorkspace };
+	@property(Object)
 	get focusedWindow() { return this.#focusedWindow };
+	@property(Object)
+	get windows() { return this.#windows };
 
 	handle(msg: any) {
 		print(`Received: ${JSON.stringify(msg)}`);
 		if (msg["Ok"]) return;
 		else if (msg["WorkspacesChanged"]) {
 			this.#workspaces = msg["WorkspacesChanged"]["workspaces"] as Niri.Workspace[];
+			this.#focusedWorkspace = this.#workspaces.find(w => w.is_active && w.is_focused) ?? null;
 			this.notify("workspaces");
+			this.notify("focused_workspace");
 		} else if (msg["WindowFocusChanged"]) {
 			this.#focusedWindow = JSON.parse(get("focused-window"));
-			this.notify("focusedWindow");
+			this.notify("focused_window");
 		}
 	}
 

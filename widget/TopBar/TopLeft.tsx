@@ -1,11 +1,11 @@
 import { bind } from "astal/binding";
 import { Gtk } from "astal/gtk3";
 import { Variable } from "astal/variable";
-// import Hyprland from "gi://AstalHyprland";
+import { Niri } from "../bindings/niri";
 
-// const hyprland = Hyprland.get_default();
+const niri = Niri.get_default();
 
-// const WorkspaceCircle = ({ ws, current }: { ws: Hyprland.Workspace, current: number }) => {
+// const WorkspaceCircle = ({ ws, current }: { ws: Niri.Workspace, current: number }) => {
 // 	const cn = ws ? (
 // 		ws.id === current ? (
 // 			ws.get_clients().length ? "ws-circle-window-active" : "ws-circle-active"
@@ -19,8 +19,8 @@ import { Variable } from "astal/variable";
 // }
 
 // const WorkspaceCircles = () => {
-// 	const comps = ([current, _]: [Hyprland.Workspace, Hyprland.Client[]]) => {
-// 		let ws = hyprland.get_workspaces();
+// 	const comps = ([current]: [Niri.Workspace[]]) => {
+//
 // 		if (current.id >= 1 && current.id <= 10) return (
 // 			<box
 // 				className="ws-circle-container"
@@ -44,7 +44,7 @@ import { Variable } from "astal/variable";
 // 			label={current.name}
 // 		/>
 // 	};
-// 	return Variable.derive([bind(hyprland, "focused_workspace"), bind(hyprland, "clients")])().as(comps);
+// 	return Variable.derive([bind(niri, "workspaces")])().as(comps);
 // }
 
 const Clock = () => {
@@ -60,45 +60,46 @@ const Clock = () => {
 	);
 }
 
-// const CurrentWindow = () => {
-// 	const comps = ([client]: [Hyprland.Client]) => {
-// 		const windowTitle = ([t, c]: [string, string]) => {
-// 			return [
-// 				<label
-// 					halign={Gtk.Align.START}
-// 					label={t}
-// 					maxWidthChars={25}
-// 					truncate={true}
-// 					className="small-text"
-// 				/>,
-// 				<label
-// 					halign={Gtk.Align.START}
-// 					label={c}
-// 					maxWidthChars={20}
-// 					truncate={true}
-// 					className="text"
-// 				/>
-// 			]
-// 		}
-// 		return (
-// 			<box
-// 				vertical={true}
-// 				halign={Gtk.Align.START}
-// 				valign={Gtk.Align.CENTER}
-// 			>
-// 				{client ? Variable.derive([bind(client, "title"), bind(client, "class")])().as(windowTitle) : (<label
-// 					halign={Gtk.Align.START}
-// 					label=""
-// 					maxWidthChars={20}
-// 					truncate={true}
-// 					className="text"
-// 				/>)
-// 				}
-// 			</box>
-// 		);
-// 	};
-// 	return Variable.derive([bind(hyprland, "focused_client")])().as(comps);
-// }
+const CurrentWindow = () => {
+	const comps = ([window]: [Niri.Window | null]) => {
+		const windowTitle = (title: string, id: string) => {
+			return [
+				<label
+					halign={Gtk.Align.START}
+					label={title}
+					maxWidthChars={25}
+					truncate={true}
+					className="small-text"
+				/>,
+				<label
+					halign={Gtk.Align.START}
+					label={id}
+					maxWidthChars={20}
+					truncate={true}
+					className="text"
+				/>
+			]
+		}
+		return (
+			<box
+				vertical={true}
+				halign={Gtk.Align.START}
+				valign={Gtk.Align.CENTER}
+			>
+				{window ? windowTitle(window.title, window.app_id) : [(<label
+					halign={Gtk.Align.START}
+					label=""
+					maxWidthChars={20}
+					truncate={true}
+					className="text"
+				/>)]
+				}
+			</box>
+		);
+	};
+	return Variable.derive([bind(niri, "focusedWindow")])().as(comps);
+}
+
 const Logo = () => {
 	return (
 		<label
@@ -117,7 +118,7 @@ export const TopLeft = () => {
 		>
 			<Logo />
 			<Clock />
-			{/**/}
+			{CurrentWindow()}
 			<box />
 		</box>
 	);
@@ -125,4 +126,3 @@ export const TopLeft = () => {
 
 
 // {WorkspaceCircles()}
-// {CurrentWindow()}
