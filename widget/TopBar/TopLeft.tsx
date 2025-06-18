@@ -5,47 +5,40 @@ import { Niri } from "../bindings/niri";
 
 const niri = Niri.get_default();
 
-// const WorkspaceCircle = ({ ws, current }: { ws: Niri.Workspace, current: number }) => {
-// 	const cn = ws ? (
-// 		ws.id === current ? (
-// 			ws.get_clients().length ? "ws-circle-window-active" : "ws-circle-active"
-// 		) : (
-// 			ws.get_clients().length ? "ws-circle-window" : "ws-circle"
-// 		)
-// 	) : "ws-circle";
-// 	return (
-// 		<box className={cn} />
-// 	);
-// }
+const WorkspaceCircle = ({ focused, isEmpty }: { focused: boolean, isEmpty: boolean }) => {
+	const cn = focused ? (
+		isEmpty ? "ws-circle-active" : "ws-circle-window-active"
+	) : (
+		isEmpty ? "ws-circle" : "ws-circle-window"
+	);
+	return (
+		<box className={cn} />
+	);
+}
 
-// const WorkspaceCircles = () => {
-// 	const comps = ([current]: [Niri.Workspace[]]) => {
-//
-// 		if (current.id >= 1 && current.id <= 10) return (
-// 			<box
-// 				className="ws-circle-container"
-// 				spacing={4}
-// 				valign={Gtk.Align.CENTER}
-// 			>
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 1) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 2) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 3) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 4) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 5) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 6) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 7) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 8) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 9) as Hyprland.Workspace} />
-// 				<WorkspaceCircle current={current.id} ws={ws.find(w => w.id === 10) as Hyprland.Workspace} />
-// 			</box>
-// 		);
-// 		else return <label
-// 			className="ws-text"
-// 			label={current.name}
-// 		/>
-// 	};
-// 	return Variable.derive([bind(niri, "workspaces")])().as(comps);
-// }
+const WorkspaceCircles = () => {
+	const comps = ([ws, focused]: [Niri.Workspace[], Niri.Workspace | null]) => {
+		const isEmpty = (name: string) => !(ws.find(w => w.name === name)?.active_window_id);
+		if (!focused || ["one", "two", "three", "four", "five", "six"].includes(focused.name)) {
+			return <box
+				className="ws-circle-container"
+				spacing={4}
+				valign={Gtk.Align.CENTER}
+			>
+				<WorkspaceCircle focused={focused !== null && focused.name === "one"} isEmpty={isEmpty("one")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "two"} isEmpty={isEmpty("two")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "three"} isEmpty={isEmpty("three")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "four"} isEmpty={isEmpty("four")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "five"} isEmpty={isEmpty("five")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "six"} isEmpty={isEmpty("six")} />
+			</box>
+		} else return <label
+			className="ws-text"
+			label={focused.name}
+		/>
+	};
+	return Variable.derive([bind(niri, "workspaces"), bind(niri, "focusedWorkspace")])().as(comps);
+}
 
 const Clock = () => {
 	const time = Variable("").poll(1000, 'date "+%H:%M %b %d %a"');
@@ -118,6 +111,7 @@ export const TopLeft = () => {
 		>
 			<Logo />
 			<Clock />
+			{WorkspaceCircles()}
 			{CurrentWindow()}
 			<box />
 		</box>
@@ -125,4 +119,3 @@ export const TopLeft = () => {
 }
 
 
-// {WorkspaceCircles()}

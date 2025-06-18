@@ -5,7 +5,6 @@ import Gio from "gi://Gio?version=2.0"
 const get = (args: string) => exec(`niri msg -j ${args}`);
 
 export namespace Niri {
-
 	export type Workspace = {
 		id: number;
 		idx: number;
@@ -51,6 +50,7 @@ export class Niri extends GObject.Object {
 	}
 
 	#workspaces: Niri.Workspace[] = JSON.parse(get("workspaces"));
+	// TODO: Make this an array because there may be 2 monitors
 	#focusedWorkspace: Niri.Workspace | null = null;
 	#windows: Niri.Window[] = JSON.parse(get("windows"));
 	#focusedWindow: Niri.FocusedWindow | null = JSON.parse(get("focused-window"));
@@ -71,6 +71,7 @@ export class Niri extends GObject.Object {
 			this.#workspaces = msg["WorkspacesChanged"]["workspaces"] as Niri.Workspace[];
 			this.#focusedWorkspace = this.#workspaces.find(w => w.is_active && w.is_focused) ?? null;
 			this.notify("workspaces");
+			// Yes, the notify function must be in snake case
 			this.notify("focused_workspace");
 		} else if (msg["WindowFocusChanged"]) {
 			this.#focusedWindow = JSON.parse(get("focused-window"));
