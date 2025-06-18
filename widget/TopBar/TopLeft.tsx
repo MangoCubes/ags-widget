@@ -46,8 +46,8 @@ const Clock = () => {
 		<label
 			className={"clock"}
 			label={time(String)}
-			maxWidthChars={15}
-			widthChars={15}
+			maxWidthChars={14}
+			widthChars={14}
 			truncate={true}
 		/>
 	);
@@ -97,7 +97,7 @@ const Logo = () => {
 	return (
 		<label
 			className="clock"
-			label=""
+			label=" "
 		/>
 	);
 }

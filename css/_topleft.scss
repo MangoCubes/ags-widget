@@ -1,6 +1,9 @@
 @use 'colours';
 @use 'base';
 
+$circleSize: 6px;
+$activeCircleWidth: 10px;
+
 .topleft-container {
   @extend .container;
   padding-left: base.$pad;
@@ -8,7 +11,7 @@
 
 .ws-text {
     @extend .text;
-    min-width: 166px; /* (6 * 2) * 10 + 4 * 9 + 10 */
+    min-width: ($circleSize * 2) * base.$workspaceCount + base.$gap * (base.$workspaceCount - 1) + $activeCircleWidth;
 }
 
 .ws-circle-container {
@@ -17,20 +20,20 @@
 }
 
 .ws-circle {
-    border: 6px solid rgba(white, 1);
+    border: $circleSize solid rgba(white, 1);
     background: white;
     border-radius: 8px;
 }
 
 .ws-circle-window {
     @extend .ws-circle;
-    border: 6px solid rgba(colours.$miku, 1);
+    border: $circleSize solid rgba(colours.$miku, 1);
     background: colours.$miku;
 }
 
 .ws-circle-active {
     @extend .ws-circle;
-    min-width: 10px;
+    min-width: $activeCircleWidth;
 }
 
 .ws-circle-window-active {
@@ -40,4 +43,5 @@
 .clock {
     @extend .text;
     @extend .invisible;
+    /* @extend .debug; */
 }
