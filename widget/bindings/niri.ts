@@ -16,17 +16,6 @@ export namespace Niri {
 		active_window_id: number | null;
 	};
 
-	export type FocusedWindow = {
-		id: number,
-		title: string,
-		app_id: string,
-		pid: number,
-		workspace_id: number,
-		is_focused: boolean,
-		is_floating: boolean,
-		is_urgent: boolean
-	};
-
 	export type Window = {
 		id: number,
 		title: string,
@@ -53,7 +42,7 @@ export class Niri extends GObject.Object {
 	// TODO: Make this an array because there may be 2 monitors
 	#focusedWorkspace: Niri.Workspace | null = null;
 	#windows: Niri.Window[] = JSON.parse(get("windows"));
-	#focusedWindow: Niri.FocusedWindow | null = JSON.parse(get("focused-window"));
+	#focusedWindow: Niri.Window | null = JSON.parse(get("focused-window"));
 
 	@property(Object)
 	get workspaces() { return this.#workspaces };
@@ -64,18 +53,32 @@ export class Niri extends GObject.Object {
 	@property(Object)
 	get windows() { return this.#windows };
 
+	updateWorkspaces() {
+		this.#workspaces = JSON.parse(get("workspaces"));
+		this.#focusedWorkspace = this.#workspaces.find(w => w.is_active && w.is_focused) ?? null;
+		this.notify("workspaces");
+		// Yes, the notify function must be in snake case
+		this.notify("focused_workspace");
+	}
+
+	updateWindows() {
+		this.#windows = JSON.parse(get("windows"));
+		this.#focusedWindow = this.#windows.find(w => w.is_focused) ?? null;
+		this.notify("windows");
+		this.notify("focused_window");
+	}
+
 	handle(msg: any) {
 		print(`Received: ${JSON.stringify(msg)}`);
-		if (msg["Ok"]) return;
-		else if (msg["WorkspacesChanged"]) {
-			this.#workspaces = msg["WorkspacesChanged"]["workspaces"] as Niri.Workspace[];
-			this.#focusedWorkspace = this.#workspaces.find(w => w.is_active && w.is_focused) ?? null;
-			this.notify("workspaces");
-			// Yes, the notify function must be in snake case
-			this.notify("focused_workspace");
-		} else if (msg["WindowFocusChanged"]) {
-			this.#focusedWindow = JSON.parse(get("focused-window"));
-			this.notify("focused_window");
+		const key = Object.keys(msg)[0];
+		if (key === "Ok") return;
+		else if (["WorkspacesChanged", "WorkspaceActivated"].includes(key)) {
+			this.updateWorkspaces();
+		} else if (["WindowOpenedOrChanged", "WindowFocusChanged"].includes(key)) {
+			this.updateWindows();
+		} else if (["WorkspaceActiveWindowChanged"].includes(key)) {
+			this.updateWorkspaces();
+			this.updateWindows();
 		}
 	}
 
