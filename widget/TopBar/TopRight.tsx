@@ -12,7 +12,7 @@ const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
 
 const Battery = (b: AstalBattery.Device) => {
-	const comps = ([isBattery, icon, percentage]: [boolean, string, number]) => {
+	const comps = ([isBattery, percentage]: [boolean, number]) => {
 		const getNewBrightness = (up: boolean) => {
 			let newBrightness = brightness.screen;
 			if (up) newBrightness += 0.03;
@@ -21,6 +21,9 @@ const Battery = (b: AstalBattery.Device) => {
 			if (newBrightness < 0.01) return 0.01;
 			else return newBrightness;
 		}
+		// Value above 0.95 is considered 100%
+		const value = percentage * 100 > 95 ? 10 : Math.floor(percentage * 10);
+		const icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
 		return (
 			<EventBox
 				onScroll={(_, event) => brightness.screen = getNewBrightness(event.delta_y < 0)}
@@ -28,20 +31,20 @@ const Battery = (b: AstalBattery.Device) => {
 				<IconCircular
 					iconClass="battery-icon"
 					circularClass="battery-progress"
-					value={isBattery ? percentage : 1}
-					icon={isBattery ? icon : "battery-full-symbolic"}
+					value={isBattery ? (value / 10) : 1}
+					icon={isBattery ? icons[value] : "󰚥"}
 					ringClass="battery-background"
 				/>
 			</EventBox>
 		);
 	};
-	return Variable.derive([bind(b, "is_battery"), bind(b, "icon_name"), bind(b, "percentage")])().as(comps);
+	return Variable.derive([bind(b, "is_battery"), bind(b, "percentage")])().as(comps);
 }
 
 const Volume = (w: WirePlumber.Wp) => {
 	const speaker = w.audio.default_speaker;
 
-	const comps = ([volume, icon]: [number, string]) => {
+	const comps = ([volume]: [number]) => {
 		const getNewVolume = (up: boolean) => {
 			let newVolume = volume;
 			if (up) newVolume += 0.03;
@@ -50,6 +53,14 @@ const Volume = (w: WirePlumber.Wp) => {
 			if (newVolume < 0) return 0;
 			else return newVolume;
 		}
+		const icons = ["󰝟", "󰕿", "󰖀", "󰕾", "󱄠", "󰸈"];
+		let icon;
+		if (volume === 0) icon = icons[0];
+		else if (volume < 0.25) icon = icons[1];
+		else if (volume < 0.5) icon = icons[2];
+		else if (volume < 0.75) icon = icons[3];
+		else if (volume === 1) icon = icons[4];
+		else icon = icons[5];
 		return (
 			<EventBox
 				onScroll={(_, event) => speaker.set_volume(getNewVolume(event.delta_y < 0))}
@@ -58,7 +69,7 @@ const Volume = (w: WirePlumber.Wp) => {
 					iconClass="volume-icon"
 					circularClass="volume-progress"
 					value={volume}
-					icon={volume ? icon : "audio-volume-muted-symbolic"}
+					icon={icon}
 					ringClass="volume-background"
 				/>
 			</EventBox>
@@ -67,7 +78,7 @@ const Volume = (w: WirePlumber.Wp) => {
 		);
 	};
 
-	return Variable.derive([bind(speaker, "volume"), bind(speaker, "volume_icon")])().as(comps);
+	return Variable.derive([bind(speaker, "volume")])().as(comps);
 }
 
 const Wrapper = (comp: Gtk.Widget | Binding<Gtk.Widget>) => {
