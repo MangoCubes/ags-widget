@@ -1,5 +1,5 @@
 import Binding, { bind } from "astal/binding";
-import { CircularProgress, EventBox } from "astal/gtk3/widget";
+import { CircularProgress, EventBox, Slider } from "astal/gtk3/widget";
 import Variable from "astal/variable";
 import Mpris from "gi://AstalMpris";
 import Gtk from "gi://Gtk";
@@ -7,19 +7,6 @@ import Gtk from "gi://Gtk";
 const mpris = Mpris.get_default();
 
 export const TopCentre = () => {
-
-	// const genCss = (progress: number | null) => {
-	//     if (progress) {
-	//         const whole = Math.ceil(progress * 100);
-	//         return `
-	//             background: linear-gradient(to right, #47c8c0 ${whole}%, transparent ${whole}%);
-	//         `;
-	//     }
-	//     else return `
-	//         background: transparent;
-	//     `;
-	// }
-
 
 	const Media = (p: Mpris.Player) => {
 		const NowPlaying = () => <box spacing={8}
@@ -43,16 +30,14 @@ export const TopCentre = () => {
 				valign={Gtk.Align.CENTER}
 			/>
 		</box>
-
-		const Progress = () => <box className="debug">
-		</box>
+		const progressInfo = Variable.derive([bind(p, "position"), bind(p, "length")])().as(([pos, len]) => pos / len);
 		return (<EventBox
 			onClick={() => p.play_pause()}
 			onScroll={(_, event) => event.delta_y < 0 ? p.previous() : p.next()}
 		>
 			<box spacing={1} vertical>
 				<NowPlaying />
-				<Progress />
+				<Slider className="progressBar" value={progressInfo} />
 			</box>
 		</EventBox>);
 	}
