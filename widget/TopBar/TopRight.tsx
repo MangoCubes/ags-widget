@@ -55,10 +55,11 @@ const Volume = (w: WirePlumber.Wp) => {
 		}
 		const icons = ["󰝟", "󰕿", "󰖀", "󰕾", "󱄠", "󰸈"];
 		let icon;
+		console.log(volume)
 		if (volume === 0) icon = icons[0];
-		else if (volume < 0.25) icon = icons[1];
-		else if (volume < 0.5) icon = icons[2];
-		else if (volume < 0.75) icon = icons[3];
+		else if (volume < 0.33) icon = icons[1];
+		else if (volume < 0.66) icon = icons[2];
+		else if (volume < 1) icon = icons[3];
 		else if (volume === 1) icon = icons[4];
 		else icon = icons[5];
 		return (
