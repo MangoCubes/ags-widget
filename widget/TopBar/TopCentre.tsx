@@ -20,48 +20,38 @@ export const TopCentre = () => {
 	//     `;
 	// }
 
-	const Progress = (player: MprisPlayer) => {
-		return <EventBox
-			className="invisible"
-			onScroll={(_, event) => player.position += (event.delta_y < 0 ? -5 : 5)}
-		> <CircularProgress
-				className="volumeLevel"
-				rounded={false}
-				inverted={false}
-				startAt={0.75}
-			// setup={self => {
-			// 	const update = () => self.value = player.position / player.length;
-			// 	self.poll(1000, update);
-			// }}
-			/>
-		</EventBox >
-	}
 
 	const Media = (p: Mpris.Player) => {
-		const NowPlaying = () => <box>
+		const NowPlaying = () => <box spacing={8}
+		>
 			<label
 				label={bind(p, "artist")}
 				className="musicSubText"
-				// widthChars: 20,
-				maxWidthChars={20}
-				// truncate="end"
+				widthChars={12}
+				maxWidthChars={12}
+				truncate
 				halign={Gtk.Align.START}
 			/>
 			<label
 				label={bind(p, "title")}
 				className="musicText"
-				// widthChars: 20,
-				maxWidthChars={20}
-				// truncate: "end",
-				halign={Gtk.Align.START}
+				widthChars={12}
+				maxWidthChars={12}
+				truncate
 			/>
 		</box>
-		return <EventBox
+
+		const Progress = () => <box className="debug">
+		</box>
+		return (<EventBox
 			onClick={() => p.play_pause()}
 			onScroll={(_, event) => event.delta_y < 0 ? p.previous() : p.next()}
 		>
-			{NowPlaying()}
-		</EventBox>
+			<box spacing={1} vertical>
+				<NowPlaying />
+				<Progress />
+			</box>
+		</EventBox>);
 	}
 
 	const TopCentreContent = () => {
