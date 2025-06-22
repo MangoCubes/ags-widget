@@ -16,9 +16,9 @@ export const IconCircular = (props: { value: number, icon: string, iconClass: st
 				value={props.value}
 			/>
 			<box className={props.ringClass} />
-			<Icon
+			<label
 				className={props.iconClass}
-				icon={props.icon}
+				label={props.icon}
 			/>
 		</Overlay>
 	);
