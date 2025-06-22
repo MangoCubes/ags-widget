@@ -38,9 +38,7 @@ export const TopCentre = () => {
 	}
 
 	const Media = (p: Mpris.Player) => {
-		const NowPlaying = () => <box
-			vertical
-		>
+		const NowPlaying = () => <box>
 			<label
 				label={bind(p, "artist")}
 				className="musicSubText"
@@ -69,23 +67,14 @@ export const TopCentre = () => {
 	const TopCentreContent = () => {
 		const player: Binding<Mpris.Player | null> = Variable.derive([bind(mpris, "players")])().as(p => p[0][0] ?? null);
 
-		const children = player.as(p => {
-			console.log("Updated!");
-			if (p) return [Progress(p), Media(p)];
-			else return [
-				<label
-					label="Play something!"
-					className="musicText"
-					halign={Gtk.Align.START}
-				/>
-			];
+		return player.as(p => {
+			if (p) return Media(p);
+			else return (<label
+				label="Play something!"
+				className="musicText"
+				halign={Gtk.Align.START}
+			/>);
 		})
-		return <box
-			spacing={10}
-			className="invisible"
-		>
-			{children}
-		</box>
 	}
 
 	return <box
