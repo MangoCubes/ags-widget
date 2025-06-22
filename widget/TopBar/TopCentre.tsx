@@ -27,17 +27,20 @@ export const TopCentre = () => {
 			<label
 				label={bind(p, "artist")}
 				className="musicSubText"
-				widthChars={12}
-				maxWidthChars={12}
+				widthChars={10}
+				maxWidthChars={10}
 				truncate
-				halign={Gtk.Align.START}
+				halign={Gtk.Align.CENTER}
+				valign={Gtk.Align.CENTER}
 			/>
 			<label
 				label={bind(p, "title")}
 				className="musicText"
-				widthChars={12}
-				maxWidthChars={12}
+				widthChars={20}
+				maxWidthChars={20}
 				truncate
+				halign={Gtk.Align.CENTER}
+				valign={Gtk.Align.CENTER}
 			/>
 		</box>
 
@@ -55,7 +58,7 @@ export const TopCentre = () => {
 	}
 
 	const TopCentreContent = () => {
-		const player: Binding<Mpris.Player | null> = Variable.derive([bind(mpris, "players")])().as(p => p[0][0] ?? null);
+		const player: Binding<Mpris.Player | null> = bind(mpris, "players").as(p => p.find(pl => pl.title) ?? null);
 
 		return player.as(p => {
 			if (p) return Media(p);
