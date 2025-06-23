@@ -9,27 +9,54 @@ const mpris = Mpris.get_default();
 export const TopCentre = () => {
 
 	const Media = (p: Mpris.Player) => {
-		const NowPlaying = () => <box spacing={8}
-		>
-			<label
-				label={bind(p, "artist")}
-				className="musicSubText"
-				widthChars={10}
-				maxWidthChars={10}
-				truncate
-				halign={Gtk.Align.CENTER}
-				valign={Gtk.Align.CENTER}
-			/>
-			<label
-				label={bind(p, "title")}
-				className="musicText"
-				widthChars={20}
-				maxWidthChars={20}
-				truncate
-				halign={Gtk.Align.CENTER}
-				valign={Gtk.Align.CENTER}
-			/>
-		</box>
+		const NowPlaying = () => Variable.derive([bind(p, "artist"), bind(p, "title")])().as(([artist, title]) => {
+			if (artist && artist.length) {
+				return (<box vexpand>
+					<label
+						label={artist}
+						className="musicSubText"
+						widthChars={10}
+						maxWidthChars={10}
+						truncate
+						halign={Gtk.Align.CENTER}
+						valign={Gtk.Align.CENTER}
+					/>
+					<label
+						label={title}
+						className="musicText"
+						widthChars={20}
+						maxWidthChars={20}
+						truncate
+						halign={Gtk.Align.CENTER}
+						valign={Gtk.Align.CENTER}
+					/>
+				</box>);
+			} else {
+				return (<box vexpand>
+					<label
+						label=""
+						className="musicSubText"
+						widthChars={5}
+						maxWidthChars={5}
+					/>
+					<label
+						label={title}
+						className="musicText"
+						widthChars={20}
+						maxWidthChars={20}
+						truncate
+						halign={Gtk.Align.CENTER}
+						valign={Gtk.Align.CENTER}
+					/>
+					<label
+						label=""
+						className="musicSubText"
+						widthChars={5}
+						maxWidthChars={5}
+					/>
+				</box>);
+			}
+		});
 		const progressInfo = Variable.derive([bind(p, "position"), bind(p, "length")])().as(([pos, len]) => pos / len);
 		return (<EventBox
 			onClick={() => p.play_pause()}
