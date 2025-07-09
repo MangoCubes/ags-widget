@@ -18,6 +18,7 @@
 
 .volume-icon {
   @extend .icon;
+    font-family: BankGothic;
     color: colours.$teto;
 }
 
@@ -33,6 +34,7 @@
 
 .battery-icon {
   @extend .icon;
+    font-family: BankGothic;
     color: colours.$len;
 }
 

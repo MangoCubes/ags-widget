@@ -6,11 +6,9 @@ export const IconCircular = (props: { value: number, icon: string, iconClass: st
 			valign={Gtk.Align.CENTER}
 			halign={Gtk.Align.CENTER}
 		>
-			<label label={props.value.toString()} />
-			<box class={props.ringClass} />
 			<label
 				class={props.iconClass}
-				label={props.icon}
+				label={props.icon + ` ${Math.floor(props.value * 100).toString(16).toUpperCase().padStart(2, "0")}`}
 			/>
 		</overlay>
 	);

@@ -65,8 +65,8 @@ const Volume = (w: WirePlumber.Wp) => {
 		else if (volume < 0.33) icon = icons[1];
 		else if (volume < 0.66) icon = icons[2];
 		else if (volume < 1) icon = icons[3];
-		else if (volume === 1) icon = icons[4];
-		else icon = icons[5];
+		else icon = icons[4];
+		// else icon = icons[5];
 		return (
 			// <EventBox
 			// 	onScroll={(_, event) => speaker.set_volume(getNewVolume(event.delta_y < 0))}
@@ -91,10 +91,8 @@ export const TopRight = () => {
 	return (
 		<box
 			class="topright-container"
-			vexpand={false}
-			hexpand
 			halign={Gtk.Align.END}
-			spacing={4}
+			spacing={8}
 		>
 			{wp ? Volume(wp) : null}
 			{Battery(batt)}

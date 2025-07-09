@@ -18,6 +18,7 @@ export const TopBar = (monId: number) => {
 				halign={Gtk.Align.FILL}
 				orientation={Gtk.Orientation.HORIZONTAL}
 				class="window-bar"
+				homogeneous
 			>
 				<TopLeft />
 				<TopCentre />

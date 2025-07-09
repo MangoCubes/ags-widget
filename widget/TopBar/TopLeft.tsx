@@ -58,26 +58,27 @@ const Clock = () => {
 
 const CurrentWindow = () => {
 	const w = createBinding(niri, "focusedWindow");
-	return <box><With value={w}>{(w) => {
+	return <box
+	><With value={w}>{(w) => {
 		const windowTitle = (title: string, id: string) => {
 			return (<box
 				orientation={Gtk.Orientation.VERTICAL}>
-				<box halign={Gtk.Align.CENTER}>
+				<box>
 					<label
 						halign={Gtk.Align.START}
 						label={title}
-						maxWidthChars={25}
-						widthChars={25}
+						justify={Gtk.Justification.LEFT}
+						maxWidthChars={20}
 						ellipsize={Pango.EllipsizeMode.END}
 						class="small-text"
 					/>
 				</box>
-				<box halign={Gtk.Align.CENTER}>
+				<box>
 					<label
 						halign={Gtk.Align.START}
 						label={id}
-						maxWidthChars={20}
-						widthChars={20}
+						justify={Gtk.Justification.LEFT}
+						maxWidthChars={15}
 						vexpand
 						ellipsize={Pango.EllipsizeMode.END}
 						class="text"
@@ -89,6 +90,7 @@ const CurrentWindow = () => {
 			<box
 				halign={Gtk.Align.START}
 				valign={Gtk.Align.CENTER}
+				css="min-width: 200px;"
 			>
 				{w ? windowTitle(w.title, w.app_id) : [(<label
 					halign={Gtk.Align.START}
@@ -117,7 +119,6 @@ export const TopLeft = () => {
 		<box
 			spacing={8}
 			class="topleft-container"
-			vexpand={false}
 		>
 			<Logo />
 			<Clock />

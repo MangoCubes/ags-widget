@@ -15,6 +15,9 @@ export const TopCentre = () => {
 		};
 		const artist = createBinding(p, "artist");
 		const title = createBinding(p, "title");
+		const len = createBinding(p, "length");
+		const pos = createBinding(p, "position");
+		const prog = createComputed([len, pos], (len, pos) => pos / len);
 		const ms = createComputed([artist, title], (artist, title) => { return { artist: artist, title: title } });
 		const NowPlaying = (ms: MediaState) => {
 			if (ms.artist && ms.artist.length) {
@@ -66,33 +69,27 @@ export const TopCentre = () => {
 				</box>);
 			}
 		};
-		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL}>
-			<With value={ms}>{ms => NowPlaying(ms)}</With>
+		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.CENTER} vexpand>
+			<box vexpand hexpand><With value={ms}>{ms => NowPlaying(ms)}</With></box>
+			<box hexpand ><With value={prog}>{prog => <slider hexpand class="progressBar" value={prog} />}</With></box>
 		</box>
 
 		// return (<box
 		// onClick={() => p.play_pause()}
 		// onScroll={(_, event) => event.delta_y < 0 ? p.previous() : p.next()}
 		// >
-		// 			<Slider class="progressBar" value={progressInfo} />
 
 		// </Gtk.EventBox>);
 	}
 
-	const TopCentreContent = () => {
-		const player = createBinding(mpris, "players").as(p => p.find(pl => pl.title) ?? null);
-		return <box><With value={player}>{(p) => {
-			if (p) return Media(p);
-			else return (<label
-				label="Play something!"
-				class="musicText"
-				halign={Gtk.Align.START}
-			/>)
-		}}</With></box>
-	}
-	return <box
-		class="barContent">
-		{TopCentreContent()}
-	</box>
+	const player = createBinding(mpris, "players").as(p => p.find(pl => pl.title) ?? null);
+	return <box halign={Gtk.Align.CENTER}
+	><With value={player}>{(p) => {
+		if (p) return Media(p);
+		else return (<label
+			label="Play something!"
+			class="musicText"
+		/>)
+	}}</With></box>
 }
 
