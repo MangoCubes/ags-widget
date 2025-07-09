@@ -1,89 +1,98 @@
-import Binding, { bind } from "astal/binding";
-import { CircularProgress, EventBox, Slider } from "astal/gtk3/widget";
-import Variable from "astal/variable";
+import { createBinding, createComputed, createState } from "ags";
 import Mpris from "gi://AstalMpris";
 import Gtk from "gi://Gtk";
+import { With, Accessor } from "ags"
+import Pango from "gi://Pango";
 
 const mpris = Mpris.get_default();
 
 export const TopCentre = () => {
 
 	const Media = (p: Mpris.Player) => {
-		const NowPlaying = () => Variable.derive([bind(p, "artist"), bind(p, "title")])().as(([artist, title]) => {
-			if (artist && artist.length) {
-				return (<box vexpand>
+		type MediaState = {
+			artist: string,
+			title: string
+		};
+		const artist = createBinding(p, "artist");
+		const title = createBinding(p, "title");
+		const ms = createComputed([artist, title], (artist, title) => { return { artist: artist, title: title } });
+		const NowPlaying = (ms: MediaState) => {
+			if (ms.artist && ms.artist.length) {
+				return (<box>
 					<label
-						label={artist}
-						className="musicSubText"
+						label={ms.artist}
+						class="musicSubText"
 						widthChars={10}
 						maxWidthChars={10}
-						truncate
 						halign={Gtk.Align.CENTER}
 						valign={Gtk.Align.CENTER}
+						ellipsize={Pango.EllipsizeMode.END}
 					/>
 					<label
-						label={title}
-						className="musicText"
+						label={ms.title}
+						class="musicText"
 						widthChars={20}
 						maxWidthChars={20}
-						truncate
-						halign={Gtk.Align.CENTER}
 						valign={Gtk.Align.CENTER}
+						halign={Gtk.Align.START}
+						ellipsize={Pango.EllipsizeMode.END}
 					/>
 				</box>);
 			} else {
-				return (<box vexpand>
+				return (<box>
+
+
 					<label
 						label=""
-						className="musicSubText"
+						class="musicSubText"
 						widthChars={5}
 						maxWidthChars={5}
 					/>
 					<label
-						label={title}
-						className="musicText"
+						label={ms.title}
+						class="musicText"
 						widthChars={20}
 						maxWidthChars={20}
-						truncate
 						halign={Gtk.Align.CENTER}
 						valign={Gtk.Align.CENTER}
+						ellipsize={Pango.EllipsizeMode.END}
 					/>
 					<label
 						label=""
-						className="musicSubText"
+						class="musicSubText"
 						widthChars={5}
 						maxWidthChars={5}
 					/>
 				</box>);
 			}
-		});
-		const progressInfo = Variable.derive([bind(p, "position"), bind(p, "length")])().as(([pos, len]) => pos / len);
-		return (<EventBox
-			onClick={() => p.play_pause()}
-			onScroll={(_, event) => event.delta_y < 0 ? p.previous() : p.next()}
-		>
-			<box spacing={1} vertical>
-				<NowPlaying />
-				<Slider className="progressBar" value={progressInfo} />
-			</box>
-		</EventBox>);
+		};
+		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL}>
+			<With value={ms}>{ms => NowPlaying(ms)}</With>
+		</box>
+
+		// return (<box
+		// onClick={() => p.play_pause()}
+		// onScroll={(_, event) => event.delta_y < 0 ? p.previous() : p.next()}
+		// >
+		// 			<Slider class="progressBar" value={progressInfo} />
+
+		// </Gtk.EventBox>);
 	}
 
 	const TopCentreContent = () => {
-		const player: Binding<Mpris.Player | null> = bind(mpris, "players").as(p => p.find(pl => pl.title) ?? null);
-
-		return player.as(p => {
+		const player = createBinding(mpris, "players").as(p => p.find(pl => pl.title) ?? null);
+		return <box><With value={player}>{(p) => {
 			if (p) return Media(p);
 			else return (<label
 				label="Play something!"
-				className="musicText"
+				class="musicText"
 				halign={Gtk.Align.START}
-			/>);
-		})
+			/>)
+		}}</With></box>
 	}
-
 	return <box
-		className="barContent">
+		class="barContent">
 		{TopCentreContent()}
 	</box>
 }
+

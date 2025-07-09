@@ -1,33 +1,37 @@
-import Binding, { bind } from "astal/binding";
-import { Gtk } from "astal/gtk3";
-import { EventBox } from "astal/gtk3/widget";
-import { Variable } from "astal/variable";
 import WirePlumber from "gi://AstalWp";
 import AstalBattery from "gi://AstalBattery";
 import { IconCircular } from "../lib/IconCircular";
 import Brightness from "../bindings/brightness";
+import { Accessor, createBinding, createComputed, With } from "ags";
+import Gtk from "gi://Gtk";
+import { createPoll } from "ags/time";
 
 const brightness = Brightness.get_default()
 const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
 
 const Battery = (b: AstalBattery.Device) => {
-	const comps = ([isBattery, percentage]: [boolean, number]) => {
-		const getNewBrightness = (up: boolean) => {
-			let newBrightness = brightness.screen;
-			if (up) newBrightness += 0.03;
-			else newBrightness -= 0.03;
-			if (newBrightness > 1) return 1;
-			if (newBrightness < 0.01) return 0.01;
-			else return newBrightness;
-		}
-		// Value above 0.95 is considered 100%
-		const value = percentage * 100 > 95 ? 10 : Math.floor(percentage * 10);
-		const icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
-		return (
-			<EventBox
-				onScroll={(_, event) => brightness.screen = getNewBrightness(event.delta_y < 0)}
-			>
+	const percentage = createBinding(b, "percentage");
+	const isBattery = createBinding(b, "is_battery");
+	const batteryInfo: Accessor<[number, boolean]> = createComputed([percentage, isBattery], (p, b) => [p, b]);
+
+	return (
+		<box><With value={batteryInfo}>{([percentage, isBattery]) => {
+			const getNewBrightness = (up: boolean) => {
+				let newBrightness = brightness.screen;
+				if (up) newBrightness += 0.03;
+				else newBrightness -= 0.03;
+				if (newBrightness > 1) return 1;
+				if (newBrightness < 0.01) return 0.01;
+				else return newBrightness;
+			}
+			// Value above 0.95 is considered 100%
+			const value = percentage * 100 > 95 ? 10 : Math.floor(percentage * 10);
+			const icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
+			return (
+				// <EventBox
+				// 	onScroll={(_, event) => brightness.screen = getNewBrightness(event.delta_y < 0)}
+				// >
 				<IconCircular
 					iconClass="battery-icon"
 					circularClass="battery-progress"
@@ -35,16 +39,18 @@ const Battery = (b: AstalBattery.Device) => {
 					icon={isBattery ? icons[value] : "󰚥"}
 					ringClass="battery-background"
 				/>
-			</EventBox>
-		);
-	};
-	return Variable.derive([bind(b, "is_battery"), bind(b, "percentage")])().as(comps);
+				// </EventBox>
+			);
+
+		}}</With></box>
+	);
 }
 
 const Volume = (w: WirePlumber.Wp) => {
 	const speaker = w.audio.default_speaker;
+	const vol = createBinding(speaker, "volume");
 
-	const comps = ([volume]: [number]) => {
+	return <box><With value={vol}>{(volume) => {
 		const getNewVolume = (up: boolean) => {
 			let newVolume = volume;
 			if (up) newVolume += 0.03;
@@ -62,46 +68,36 @@ const Volume = (w: WirePlumber.Wp) => {
 		else if (volume === 1) icon = icons[4];
 		else icon = icons[5];
 		return (
-			<EventBox
-				onScroll={(_, event) => speaker.set_volume(getNewVolume(event.delta_y < 0))}
-			>
-				<IconCircular
-					iconClass="volume-icon"
-					circularClass="volume-progress"
-					value={volume}
-					icon={icon}
-					ringClass="volume-background"
-				/>
-			</EventBox>
-
-
+			// <EventBox
+			// 	onScroll={(_, event) => speaker.set_volume(getNewVolume(event.delta_y < 0))}
+			// >
+			<IconCircular
+				iconClass="volume-icon"
+				circularClass="volume-progress"
+				value={volume}
+				icon={icon}
+				ringClass="volume-background"
+			/>
+			// </EventBox>
 		);
-	};
 
-	return Variable.derive([bind(speaker, "volume")])().as(comps);
+	}}</With></box>
+
 }
 
-const Wrapper = (comp: Gtk.Widget | Binding<Gtk.Widget>) => {
-	return (
-		<box
-			className="wrapper"
-		>
-			{comp}
-		</box>
-	);
-}
 
 export const TopRight = () => {
 	// Note: The subcomponent order is reversed
 	return (
 		<box
-			className="topright-container"
+			class="topright-container"
 			vexpand={false}
+			hexpand
 			halign={Gtk.Align.END}
 			spacing={4}
 		>
-			{wp ? Wrapper(Volume(wp)) : null}
-			{Wrapper(Battery(batt))}
+			{wp ? Volume(wp) : null}
+			{Battery(batt)}
 		</box>
 	);
 }

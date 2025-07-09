@@ -1,7 +1,8 @@
-import { bind } from "astal/binding";
-import { Gtk } from "astal/gtk3";
-import { Variable } from "astal/variable";
+import Gtk from "gi://Gtk";
 import { Niri } from "../bindings/niri";
+import { createPoll } from "ags/time";
+import { Accessor, createBinding, createComputed, With } from "ags";
+import Pango from "gi://Pango";
 
 const niri = Niri.get_default();
 
@@ -12,16 +13,19 @@ const WorkspaceCircle = ({ focused, isEmpty }: { focused: boolean, isEmpty: bool
 		isEmpty ? "ws-circle" : "ws-circle-window"
 	);
 	return (
-		<box className={cn} />
+		<box class={cn} />
 	);
 }
 
 const WorkspaceCircles = () => {
-	const comps = ([ws, focused]: [Niri.Workspace[], Niri.Workspace | null]) => {
+	const wss = createBinding(niri, "workspaces");
+	const ws = createBinding(niri, "focusedWorkspace");
+	const wsInfo: Accessor<[Niri.Workspace[], Niri.Workspace | null]> = createComputed([wss, ws], (wss, ws) => [wss, ws]);
+	return <box><With value={wsInfo}>{([ws, focused]: [Niri.Workspace[], Niri.Workspace | null]) => {
 		const isEmpty = (name: string) => !(ws.find(w => w.name === name)?.active_window_id);
 		if (!focused || ["one", "two", "three", "four", "five", "six"].includes(focused.name)) {
 			return <box
-				className="ws-circle-container"
+				class="ws-circle-container"
 				spacing={4}
 				valign={Gtk.Align.CENTER}
 			>
@@ -33,70 +37,76 @@ const WorkspaceCircles = () => {
 				<WorkspaceCircle focused={focused !== null && focused.name === "six"} isEmpty={isEmpty("six")} />
 			</box>
 		} else return <label
-			className="ws-text"
+			class="ws-text"
 			label={focused.name}
 		/>
-	};
-	return Variable.derive([bind(niri, "workspaces"), bind(niri, "focusedWorkspace")])().as(comps);
+
+	}}</With></box>
 }
 
 const Clock = () => {
-	const time = Variable("").poll(1000, 'date "+%H:%M %b %d %a"');
+	const time = createPoll('', 1000, 'date "+%H:%M %b %d %a"');
 	return (
 		<label
-			className={"clock"}
+			class={"clock"}
 			label={time(String)}
 			maxWidthChars={14}
 			widthChars={14}
-			truncate={true}
 		/>
 	);
 }
 
 const CurrentWindow = () => {
-	const comps = ([window]: [Niri.Window | null]) => {
+	const w = createBinding(niri, "focusedWindow");
+	return <box><With value={w}>{(w) => {
 		const windowTitle = (title: string, id: string) => {
-			return [
-				<label
-					halign={Gtk.Align.START}
-					label={title}
-					maxWidthChars={25}
-					truncate={true}
-					className="small-text"
-				/>,
-				<label
-					halign={Gtk.Align.START}
-					label={id}
-					maxWidthChars={20}
-					truncate={true}
-					className="text"
-				/>
-			]
+			return (<box
+				orientation={Gtk.Orientation.VERTICAL}>
+				<box halign={Gtk.Align.CENTER}>
+					<label
+						halign={Gtk.Align.START}
+						label={title}
+						maxWidthChars={25}
+						widthChars={25}
+						ellipsize={Pango.EllipsizeMode.END}
+						class="small-text"
+					/>
+				</box>
+				<box halign={Gtk.Align.CENTER}>
+					<label
+						halign={Gtk.Align.START}
+						label={id}
+						maxWidthChars={20}
+						widthChars={20}
+						vexpand
+						ellipsize={Pango.EllipsizeMode.END}
+						class="text"
+					/>
+				</box>
+			</box>);
 		}
 		return (
 			<box
-				vertical={true}
 				halign={Gtk.Align.START}
 				valign={Gtk.Align.CENTER}
 			>
-				{window ? windowTitle(window.title, window.app_id) : [(<label
+				{w ? windowTitle(w.title, w.app_id) : [(<label
 					halign={Gtk.Align.START}
 					label=""
 					maxWidthChars={20}
-					truncate={true}
-					className="text"
+					class="text"
 				/>)]
 				}
 			</box>
 		);
-	};
-	return Variable.derive([bind(niri, "focusedWindow")])().as(comps);
+
+	}}</With></box>
 }
 
 const Logo = () => {
 	return (
 		<label
-			className="clock"
+			class="clock"
 			label=" "
 		/>
 	);
@@ -106,7 +116,7 @@ export const TopLeft = () => {
 	return (
 		<box
 			spacing={8}
-			className="topleft-container"
+			class="topleft-container"
 			vexpand={false}
 		>
 			<Logo />

@@ -1,6 +1,8 @@
-import GObject, { register, GLib, property } from "astal/gobject"
-import { exec } from "astal/process"
+import { getter, register } from "ags/gobject";
+import { exec } from "ags/process";
 import Gio from "gi://Gio?version=2.0"
+import GLib from "gi://GLib";
+import GObject from "gi://GObject";
 
 const get = (args: string) => exec(`niri msg -j ${args}`);
 
@@ -44,13 +46,13 @@ export class Niri extends GObject.Object {
 	#windows: Niri.Window[] = JSON.parse(get("windows"));
 	#focusedWindow: Niri.Window | null = JSON.parse(get("focused-window"));
 
-	@property(Object)
+	@getter(Object)
 	get workspaces() { return this.#workspaces };
-	@property(Object)
+	@getter(Object)
 	get focusedWorkspace() { return this.#focusedWorkspace };
-	@property(Object)
+	@getter(Object)
 	get focusedWindow() { return this.#focusedWindow };
-	@property(Object)
+	@getter(Object)
 	get windows() { return this.#windows };
 
 	updateWorkspaces() {
