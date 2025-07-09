@@ -8,34 +8,40 @@
 
 .volume-progress {
     @extend .progress;
-    color: colours.$teto;
-}
-
-.volume-background {
-    border: 1px solid rgba(colours.$teto, 1);
-    border-radius: base.$widgetHeight - (base.$gap * 2);
+    highlight {
+        all: unset;
+        background-color: colours.$teto;
+    }
 }
 
 .volume-icon {
   @extend .icon;
-    font-family: BankGothic;
-    color: colours.$teto;
+  color: colours.$teto;
+}
+
+.volume-text {
+  @extend .text;
+  @extend .icon;
+    text-shadow: 0px 0px 2px colours.$teto, 0px 0px 2px colours.$teto;
 }
 
 .battery-progress {
     @extend .progress;
-    color: colours.$len;
-}
-
-.battery-background {
-    border: 1px solid rgba(colours.$len, 1);
-    border-radius: base.$widgetHeight - (base.$gap * 2);
+    highlight {
+        all: unset;
+        background-color: colours.$len;
+    }
 }
 
 .battery-icon {
   @extend .icon;
-    font-family: BankGothic;
-    color: colours.$len;
+  color: colours.$len;
+}
+
+.battery-text {
+  @extend .text;
+  @extend .icon;
+    text-shadow: 0px 0px 2px colours.$len, 0px 0px 2px colours.$len;
 }
 
 .wrapper {

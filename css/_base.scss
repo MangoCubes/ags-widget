@@ -55,9 +55,19 @@ $workspaceCount: 6;
 }
 
 .progress {
-    @extend .invisible;
-    min-width: $widgetHeight - ($gap * 2);
-    min-height: $widgetHeight - ($gap * 2);
-    font-size: 4px;
-    margin-top: 16px;
+    all: unset;
+    min-height: $border;
+    background: transparent;
+    trough {
+        all: unset;
+        min-height: $border;
+    }
+
+    highlight {
+        all: unset;
+        background-color: white;
+    }
+    slider {
+        all: unset;
+    }
 }
