@@ -1,8 +1,9 @@
 @use 'colours';
 @use 'base';
 
-$circleSize: 6px;
+$wsBlockWidth: 12px;
 $activeCircleWidth: 10px;
+$wsGap: 2px;
 
 .topleft-container {
   @extend .container;
@@ -11,32 +12,29 @@ $activeCircleWidth: 10px;
 
 .ws-text {
     @include base.text();
-    min-width: ($circleSize * 2) * base.$workspaceCount + base.$gap * (base.$workspaceCount - 1) + $activeCircleWidth;
+    min-width: (6 * (($wsGap * 2) + $wsBlockWidth));
+    /* min-width: ($wsBlockWidth * 2) * base.$workspaceCount + base.$gap * (base.$workspaceCount - 1) + $activeCircleWidth; */
 }
 
-.ws-circle-container {
-  @extend .invisible;
-  min-height: 8px;
-}
-
-.ws-circle {
-    border: $circleSize solid rgba(white, 1);
+.ws-block {
+    margin-left: $wsGap;
+    margin-right: $wsGap;
     background: white;
-    border-radius: 8px;
+    min-height: base.$border;
+    min-width: $wsBlockWidth;
 }
 
-.ws-circle-window {
-    @extend .ws-circle;
-    border: $circleSize solid rgba(colours.$miku, 1);
+.ws-block-window {
+    @extend .ws-block;
     background: colours.$miku;
 }
 
-.ws-circle-active {
-    @extend .ws-circle;
-    min-width: $activeCircleWidth;
+.ws-block-focused {
+    @extend .ws-block;
+    min-height: base.$border * 3;
 }
 
-.ws-circle-window-active {
-    @extend .ws-circle-active;
-    @extend .ws-circle-window;
+.ws-block-window-focused {
+    @extend .ws-block-focused;
+    @extend .ws-block-window;
 }

@@ -12,26 +12,33 @@ $border: 4px;
 $gap: 4px;
 $workspaceCount: 6;
 
-@mixin text($colour: colours.$miku) {
+@mixin text-base($size, $colour) {
     font-family: BankGothic;
-    font-size: $fontSize;
+    font-size: $size;
     color: white;
     text-shadow: 0px 0px 2px $colour, 0px 0px 2px $colour;
 }
 
+@mixin text($colour: colours.$miku) {
+  @include text-base($fontSize, $colour);
+}
+
 @mixin small-text($colour: colours.$miku) {
-    font-family: BankGothic;
-    font-size: $smallFontSize;
-    color: white;
-    text-shadow: 0px 0px 2px $colour, 0px 0px 2px $colour;
+  @include text-base($smallFontSize, $colour);
+}
+
+@mixin medium-text($colour: colours.$miku) {
+  @include text-base($bodySize, $colour);
 }
 
 .text {
   @include text();
 }
-
 .small-text {
   @include small-text();
+}
+.medium-text {
+  @include medium-text();
 }
 
 .invisible {

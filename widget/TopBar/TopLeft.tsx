@@ -6,35 +6,35 @@ import Pango from "gi://Pango";
 
 const niri = Niri.get_default();
 
-const WorkspaceCircle = ({ focused, isEmpty }: { focused: boolean, isEmpty: boolean }) => {
-	const cn = focused ? (
-		isEmpty ? "ws-circle-active" : "ws-circle-window-active"
-	) : (
-		isEmpty ? "ws-circle" : "ws-circle-window"
-	);
-	return (
-		<box class={cn} />
-	);
+const WorkspaceCircle = ({ focused, windowCount }: { focused: boolean, windowCount: number }) => {
+	return <box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.CENTER} vexpand>
+		<box class={windowCount ? (focused ? "ws-block-window-focused" : "ws-block-window") : (focused ? "ws-block-focused" : "ws-block")} />
+		<label vexpand label={windowCount > 9 ? "+" : windowCount.toString()} class="small-text" justify={Gtk.Justification.RIGHT} />
+		<box class={windowCount ? (focused ? "ws-block-window-focused" : "ws-block-window") : (focused ? "ws-block-focused" : "ws-block")} />
+	</box>
 }
 
 const WorkspaceCircles = () => {
 	const wss = createBinding(niri, "workspaces");
 	const ws = createBinding(niri, "focusedWorkspace");
-	const wsInfo: Accessor<[Niri.Workspace[], Niri.Workspace | null]> = createComputed([wss, ws], (wss, ws) => [wss, ws]);
-	return <box><With value={wsInfo}>{([ws, focused]: [Niri.Workspace[], Niri.Workspace | null]) => {
-		const isEmpty = (name: string) => !(ws.find(w => w.name === name)?.active_window_id);
+	const windows = createBinding(niri, "windows");
+	const wsInfo: Accessor<[Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]> = createComputed([wss, ws, windows], (wss, ws, windows) => [wss, ws, windows]);
+	return <box><With value={wsInfo}>{([ws, focused, windows]: [Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]) => {
+		const getWindowCount = (name: string) => {
+			const workspace = ws.find(w => w.name === name);
+			if (!workspace) return 0;
+			return windows.filter(wd => wd.workspace_id === workspace.id).length;
+		}
 		if (!focused || ["one", "two", "three", "four", "five", "six"].includes(focused.name)) {
 			return <box
-				class="ws-circle-container"
-				spacing={4}
-				valign={Gtk.Align.CENTER}
+				vexpand
 			>
-				<WorkspaceCircle focused={focused !== null && focused.name === "one"} isEmpty={isEmpty("one")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "two"} isEmpty={isEmpty("two")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "three"} isEmpty={isEmpty("three")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "four"} isEmpty={isEmpty("four")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "five"} isEmpty={isEmpty("five")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "six"} isEmpty={isEmpty("six")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "one"} windowCount={getWindowCount("one")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "two"} windowCount={getWindowCount("two")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "three"} windowCount={getWindowCount("three")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "four"} windowCount={getWindowCount("four")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "five"} windowCount={getWindowCount("five")} />
+				<WorkspaceCircle focused={focused !== null && focused.name === "six"} windowCount={getWindowCount("six")} />
 			</box>
 		} else return <label
 			class="ws-text"
