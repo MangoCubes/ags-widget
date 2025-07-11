@@ -67,6 +67,9 @@ $workspaceCount: 6;
     all: unset;
     min-height: $border;
     background: $bg;
+
+    border-right: 1px solid $fg;
+    border-left: 1px solid $fg;
     trough {
         all: unset;
         min-height: $border;

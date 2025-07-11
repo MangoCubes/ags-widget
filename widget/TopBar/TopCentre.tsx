@@ -71,7 +71,7 @@ export const TopCentre = () => {
 		};
 		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.CENTER} vexpand>
 			<box vexpand hexpand><With value={ms}>{ms => NowPlaying(ms)}</With></box>
-			<box hexpand ><With value={prog}>{prog => <slider hexpand class="progressBar" value={prog} />}</With></box>
+			<box><With value={prog}>{prog => <slider hexpand class="progressBar" value={prog} />}</With></box>
 		</box>
 
 		// return (<box

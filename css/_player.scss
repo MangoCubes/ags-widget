@@ -10,23 +10,5 @@
 }
 
 .progressBar {
-    all: unset;
-    min-height: 2px;
-    border-right: 1px solid colours.$teto;
-    border-left: 1px solid colours.$teto;
-    background: colours.$teto;
-    margin-bottom: 8px;
-    box-shadow: 0px 0px 2px 1px colours.$teto;
-    trough {
-        all: unset;
-        min-height: 2px;
-    }
-
-    highlight {
-        all: unset;
-        background-color: white;
-    }
-    slider {
-        all: unset;
-    }
+    @include base.progress(colours.$teto);
 }
