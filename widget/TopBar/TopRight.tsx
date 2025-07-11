@@ -26,7 +26,7 @@ const Battery = (b: AstalBattery.Device) => {
 				else return newBrightness;
 			}
 			// Value above 0.95 is considered 100%
-			const value = percentage * 100 > 95 ? 10 : Math.floor(percentage * 10);
+			const adjusted = percentage * 100 > 95 ? 1 : percentage;
 			const icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
 			return (
 				// <EventBox
@@ -35,8 +35,8 @@ const Battery = (b: AstalBattery.Device) => {
 				<IconCircular
 					iconClass="battery-icon"
 					circularClass="battery-progress"
-					value={isBattery ? (value / 10) : 1}
-					icon={isBattery ? icons[value] : "󰚥"}
+					value={isBattery ? adjusted : 1}
+					icon={isBattery ? icons[Math.floor(adjusted * 10)] : "󰚥"}
 					textClass="battery-text"
 				/>
 				// </EventBox>

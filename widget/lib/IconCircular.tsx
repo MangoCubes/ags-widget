@@ -9,6 +9,8 @@ export const IconCircular = (props: { value: number, icon: string, iconClass: st
 				vexpand
 			>
 				<label
+					widthChars={1}
+					maxWidthChars={1}
 					class={props.iconClass}
 					label={props.icon}
 				/>
@@ -16,7 +18,7 @@ export const IconCircular = (props: { value: number, icon: string, iconClass: st
 					widthChars={3}
 					maxWidthChars={3}
 					class={props.textClass}
-					label={` ${props.value >= 1 ? "MX" : Math.floor(props.value * 100).toString(16).toUpperCase().padStart(2, "0")}`}
+					label={` ${props.value >= 1 ? "MX" : Math.floor(props.value * 100).toString().toUpperCase().padStart(2, "0")}`}
 				/>
 			</box>
 
