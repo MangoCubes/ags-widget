@@ -62,6 +62,8 @@ const CurrentWindow = () => {
 	><With value={w}>{(w) => {
 		const windowTitle = (title: string, id: string) => {
 			return (<box
+				homogeneous
+				halign={Gtk.Align.FILL}
 				orientation={Gtk.Orientation.VERTICAL}>
 				<box>
 					<label
