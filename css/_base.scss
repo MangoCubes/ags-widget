@@ -12,17 +12,26 @@ $border: 4px;
 $gap: 4px;
 $workspaceCount: 6;
 
-.text {
+@mixin text($colour: colours.$miku) {
     font-family: BankGothic;
     font-size: $fontSize;
     color: white;
-    text-shadow: 0px 0px 2px colours.$miku, 0px 0px 2px colours.$miku;
+    text-shadow: 0px 0px 2px $colour, 0px 0px 2px $colour;
+}
+
+@mixin small-text($colour: colours.$miku) {
+    font-family: BankGothic;
+    font-size: $smallFontSize;
+    color: white;
+    text-shadow: 0px 0px 2px $colour, 0px 0px 2px $colour;
+}
+
+.text {
+  @include text();
 }
 
 .small-text {
-  @extend .text;
-
-  font-size: $smallFontSize;
+  @include small-text();
 }
 
 .invisible {
@@ -54,10 +63,10 @@ $workspaceCount: 6;
   font-size: $iconSize;
 }
 
-.progress {
+@mixin progress($fg, $bg: transparent) {
     all: unset;
     min-height: $border;
-    background: transparent;
+    background: $bg;
     trough {
         all: unset;
         min-height: $border;
@@ -65,8 +74,9 @@ $workspaceCount: 6;
 
     highlight {
         all: unset;
-        background-color: white;
+        background-color: $fg;
     }
+
     slider {
         all: unset;
     }

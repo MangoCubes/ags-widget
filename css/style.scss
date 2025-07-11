@@ -75,14 +75,3 @@
     min-height: base.$popupHeight;
     padding: base.$pad;
 }
-
-.body {
-    @extend .text;
-    font-size: base.$bodySize;
-}
-
-.calendar {
-    @extend .bar;
-    @extend .text;
-    // padding: $pad;
-}

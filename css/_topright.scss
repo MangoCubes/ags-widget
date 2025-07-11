@@ -7,11 +7,7 @@
 }
 
 .volume-progress {
-    @extend .progress;
-    highlight {
-        all: unset;
-        background-color: colours.$teto;
-    }
+    @include base.progress(colours.$teto);
 }
 
 .volume-icon {
@@ -20,17 +16,11 @@
 }
 
 .volume-text {
-  @extend .text;
-  @extend .icon;
-    text-shadow: 0px 0px 2px colours.$teto, 0px 0px 2px colours.$teto;
+    @include base.text(colours.$teto);
 }
 
 .battery-progress {
-    @extend .progress;
-    highlight {
-        all: unset;
-        background-color: colours.$len;
-    }
+    @include base.progress(colours.$len);
 }
 
 .battery-icon {
@@ -39,9 +29,7 @@
 }
 
 .battery-text {
-  @extend .text;
-  @extend .icon;
-    text-shadow: 0px 0px 2px colours.$len, 0px 0px 2px colours.$len;
+    @include base.text(colours.$len);
 }
 
 .wrapper {

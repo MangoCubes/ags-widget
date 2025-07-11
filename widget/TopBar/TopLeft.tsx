@@ -48,7 +48,7 @@ const Clock = () => {
 	const time = createPoll('', 1000, 'date "+%H:%M %b %d %a"');
 	return (
 		<label
-			class={"clock"}
+			class="text"
 			label={time(String)}
 			maxWidthChars={14}
 			widthChars={14}
@@ -108,7 +108,7 @@ const CurrentWindow = () => {
 const Logo = () => {
 	return (
 		<label
-			class="clock"
+			class="text"
 			label=" "
 		/>
 	);

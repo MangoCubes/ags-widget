@@ -10,7 +10,7 @@ $activeCircleWidth: 10px;
 }
 
 .ws-text {
-    @extend .text;
+    @include base.text();
     min-width: ($circleSize * 2) * base.$workspaceCount + base.$gap * (base.$workspaceCount - 1) + $activeCircleWidth;
 }
 
@@ -39,9 +39,4 @@ $activeCircleWidth: 10px;
 .ws-circle-window-active {
     @extend .ws-circle-active;
     @extend .ws-circle-window;
-}
-.clock {
-    @extend .text;
-    @extend .invisible;
-    /* @extend .debug; */
 }

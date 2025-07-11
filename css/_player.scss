@@ -2,14 +2,11 @@
 @use 'colours';
 
 .musicText {
-    @extend .text;
-    text-shadow: 0px 0px 2px colours.$teto, 0px 0px 2px colours.$teto;
+    @include base.text(colours.$teto);
 }
 
 .musicSubText {
-    @extend .text;
-    font-size: base.$bodySize;
-    text-shadow: 0px 0px 2px colours.$teto, 0px 0px 2px colours.$teto;
+    @include base.small-text(colours.$teto);
 }
 
 .progressBar {
@@ -32,16 +29,4 @@
     slider {
         all: unset;
     }
-}
-
-
-.focusLossDetection {
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-bottom: 50px;
-}
-
-.playerInfo {
-    @extend .text;
-    font-size: base.$bodySize;
 }
