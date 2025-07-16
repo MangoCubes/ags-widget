@@ -16,6 +16,10 @@ $wsGap: 2px;
     /* min-width: ($wsBlockWidth * 2) * base.$workspaceCount + base.$gap * (base.$workspaceCount - 1) + $activeCircleWidth; */
 }
 
+@mixin gradient($colour) {
+    background: linear-gradient(0deg, $colour 0%, $colour 50%, rgba(0, 0, 0, 0) 100%);
+}
+
 .ws-block {
     margin-left: $wsGap;
     margin-right: $wsGap;
@@ -29,12 +33,25 @@ $wsGap: 2px;
     background: colours.$miku;
 }
 
+
 .ws-block-focused {
     @extend .ws-block;
+    @include gradient(white);
     min-height: base.$border * 3;
 }
 
+.ws-top-block-focused {
+    @extend .ws-block-focused;
+    background: transparent;
+}
+
+.ws-top-block {
+    @extend .ws-block;
+    background: transparent;
+}
+
 .ws-block-window-focused {
+    @include gradient(colours.$miku);
     @extend .ws-block-focused;
     @extend .ws-block-window;
 }

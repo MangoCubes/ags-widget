@@ -8,7 +8,7 @@ const niri = Niri.get_default();
 
 const WorkspaceCircle = ({ focused, windowCount }: { focused: boolean, windowCount: number }) => {
 	return <box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.CENTER} vexpand>
-		<box class={windowCount ? (focused ? "ws-block-window-focused" : "ws-block-window") : (focused ? "ws-block-focused" : "ws-block")} />
+		<box class={focused ? "ws-top-block-focused" : "ws-top-block"} />
 		<label vexpand label={windowCount > 9 ? "+" : windowCount.toString()} class="small-text" justify={Gtk.Justification.RIGHT} />
 		<box class={windowCount ? (focused ? "ws-block-window-focused" : "ws-block-window") : (focused ? "ws-block-focused" : "ws-block")} />
 	</box>
