@@ -38,7 +38,7 @@ const WorkspaceCircles = () => {
 			</box>
 		} else return <label
 			class="ws-text"
-			label={focused.name}
+			label={focused.name ?? ("ID: " + focused.idx.toString())}
 		/>
 
 	}}</With></box>
