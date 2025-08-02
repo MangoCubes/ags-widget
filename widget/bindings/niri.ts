@@ -71,7 +71,7 @@ export class Niri extends GObject.Object {
 	}
 
 	handle(msg: any) {
-		print(`Received: ${JSON.stringify(msg)}`);
+		// print(`Received: ${JSON.stringify(msg)}`);
 		const key = Object.keys(msg)[0];
 		if (key === "Ok") return;
 		else if (["WorkspacesChanged", "WorkspaceActivated"].includes(key)) {

@@ -21,7 +21,6 @@ export const IconCircular = (props: { value: number, icon: string, iconClass: st
 					label={` ${props.value >= 1 ? "MX" : Math.floor(props.value * 100).toString().toUpperCase().padStart(2, "0")}`}
 				/>
 			</box>
-
 			<slider class={props.circularClass} value={props.value} />
 		</box>
 	);

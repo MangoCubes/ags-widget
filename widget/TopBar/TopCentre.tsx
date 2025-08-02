@@ -3,10 +3,14 @@ import Mpris from "gi://AstalMpris";
 import Gtk from "gi://Gtk";
 import { With, Accessor } from "ags"
 import Pango from "gi://Pango";
+import { CallbackComp, CallbackTree } from "../../app";
 
 const mpris = Mpris.get_default();
 
-export const TopCentre = () => {
+export const TopCentre: CallbackComp = () => {
+
+	// Player ID state management
+	const [pid, setPid] = createState(0);
 
 	const Media = (p: Mpris.Player) => {
 		type MediaState = {
@@ -43,8 +47,6 @@ export const TopCentre = () => {
 				</box>);
 			} else {
 				return (<box>
-
-
 					<label
 						label=""
 						class="musicSubText"
@@ -82,14 +84,53 @@ export const TopCentre = () => {
 		// </Gtk.EventBox>);
 	}
 
-	const player = createBinding(mpris, "players").as(p => p.find(pl => pl.title) ?? null);
-	return <box halign={Gtk.Align.CENTER}
-	><With value={player}>{(p) => {
-		if (p) return Media(p);
-		else return (<label
-			label="Play something!"
-			class="musicText"
-		/>)
-	}}</With></box>
+	const players = createBinding(mpris, "players");
+	const nothing = (<label
+		label="Play something!"
+		class="musicText"
+	/>)
+	const comp = (
+		<box halign={Gtk.Align.CENTER}>
+			<With value={players}>
+				{(p) => {
+					if (p.length) return (
+						<box>
+							<With value={pid}>
+								{(id) => {
+									if (p[id]) return Media(p[id]);
+									else return nothing;
+								}}
+							</With>
+						</box>
+					);
+					else return nothing;
+				}}
+			</With>
+		</box>
+	);
+	const changePid = (original: number) => {
+		const playerLen = players.get().length;
+		original = original % playerLen;
+		if (original < 0) original += playerLen;
+		return original;
+	}
+	const callbacks: CallbackTree = {
+		player: {
+			next: [() => {
+				setPid(pid => changePid(pid + 1));
+				return null;
+			}],
+			prev: [() => {
+				setPid(pid => changePid(pid - 1));
+				return null;
+			}],
+			get: [() => players.get()[pid.get()]?.bus_name.replace("org.mpris.MediaPlayer2.", "") ?? null]
+		}
+	};
+
+	return {
+		comp: comp,
+		callbacks: callbacks,
+	};
 }
 
