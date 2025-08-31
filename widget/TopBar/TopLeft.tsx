@@ -5,6 +5,7 @@ import { Accessor, createBinding, createComputed, With } from "ags";
 import Pango from "gi://Pango";
 
 const niri = Niri.get_default();
+const wsNames = ["one", "two", "three", "four", "five", "six"];
 
 const WorkspaceCircle = ({ focused, windowCount }: { focused: boolean, windowCount: number }) => {
 	return <box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.CENTER} vexpand>
@@ -26,7 +27,9 @@ const WorkspaceCircles = () => {
 				if (!workspace) return 0;
 				return windows.filter(wd => wd.workspace_id === workspace.id).length;
 			}
-			const inExtraWs = focused && !["one", "two", "three", "four", "five", "six"].includes(focused.name);
+			const winCountArr = wsNames.map(name => getWindowCount(name));
+			const extraWindows = windows.length - winCountArr.reduce((a, b) => a + b, 0);
+			const inExtraWs = focused && !wsNames.includes(focused.name);
 			const TextOverlay = () => {
 				if (inExtraWs) {
 					// Components with $type="overlay" are overlays and do not interfere with the layout of other components
@@ -41,15 +44,16 @@ const WorkspaceCircles = () => {
 				<box vexpand>
 					<overlay>
 						<box css={`opacity: ${inExtraWs ? "0.3" : "1"};`}>
-							<WorkspaceCircle focused={focused !== null && focused.name === "one"} windowCount={getWindowCount("one")} />
-							<WorkspaceCircle focused={focused !== null && focused.name === "two"} windowCount={getWindowCount("two")} />
-							<WorkspaceCircle focused={focused !== null && focused.name === "three"} windowCount={getWindowCount("three")} />
-							<WorkspaceCircle focused={focused !== null && focused.name === "four"} windowCount={getWindowCount("four")} />
-							<WorkspaceCircle focused={focused !== null && focused.name === "five"} windowCount={getWindowCount("five")} />
-							<WorkspaceCircle focused={focused !== null && focused.name === "six"} windowCount={getWindowCount("six")} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "one"} windowCount={winCountArr[0]} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "two"} windowCount={winCountArr[1]} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "three"} windowCount={winCountArr[2]} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "four"} windowCount={winCountArr[3]} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "five"} windowCount={winCountArr[4]} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "six"} windowCount={winCountArr[5]} />
 						</box>
 						{TextOverlay()}
 					</overlay>
+					<label vexpand label={`+${extraWindows}`} class="small-text" justify={Gtk.Justification.RIGHT} />
 				</box>
 			);
 		}}</With>
