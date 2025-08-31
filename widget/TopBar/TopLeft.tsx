@@ -19,29 +19,41 @@ const WorkspaceCircles = () => {
 	const ws = createBinding(niri, "focusedWorkspace");
 	const windows = createBinding(niri, "windows");
 	const wsInfo: Accessor<[Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]> = createComputed([wss, ws, windows], (wss, ws, windows) => [wss, ws, windows]);
-	return <box><With value={wsInfo}>{([ws, focused, windows]: [Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]) => {
-		const getWindowCount = (name: string) => {
-			const workspace = ws.find(w => w.name === name);
-			if (!workspace) return 0;
-			return windows.filter(wd => wd.workspace_id === workspace.id).length;
-		}
-		if (!focused || ["one", "two", "three", "four", "five", "six"].includes(focused.name)) {
-			return <box
-				vexpand
-			>
-				<WorkspaceCircle focused={focused !== null && focused.name === "one"} windowCount={getWindowCount("one")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "two"} windowCount={getWindowCount("two")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "three"} windowCount={getWindowCount("three")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "four"} windowCount={getWindowCount("four")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "five"} windowCount={getWindowCount("five")} />
-				<WorkspaceCircle focused={focused !== null && focused.name === "six"} windowCount={getWindowCount("six")} />
-			</box>
-		} else return <label
-			class="ws-text"
-			label={focused.name ?? ("ID: " + focused.idx.toString())}
-		/>
-
-	}}</With></box>
+	return (<box>
+		<With value={wsInfo}>{([ws, focused, windows]: [Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]) => {
+			const getWindowCount = (name: string) => {
+				const workspace = ws.find(w => w.name === name);
+				if (!workspace) return 0;
+				return windows.filter(wd => wd.workspace_id === workspace.id).length;
+			}
+			const inExtraWs = focused && !["one", "two", "three", "four", "five", "six"].includes(focused.name);
+			const TextOverlay = () => {
+				if (inExtraWs) {
+					// Components with $type="overlay" are overlays and do not interfere with the layout of other components
+					return (<label
+						$type="overlay"
+						class="ws-text"
+						label={focused.name ?? ("ID: " + focused.idx.toString())}
+					/>)
+				} else return null;
+			};
+			return (
+				<box vexpand>
+					<overlay>
+						<box css={`opacity: ${inExtraWs ? "0.3" : "1"};`}>
+							<WorkspaceCircle focused={focused !== null && focused.name === "one"} windowCount={getWindowCount("one")} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "two"} windowCount={getWindowCount("two")} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "three"} windowCount={getWindowCount("three")} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "four"} windowCount={getWindowCount("four")} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "five"} windowCount={getWindowCount("five")} />
+							<WorkspaceCircle focused={focused !== null && focused.name === "six"} windowCount={getWindowCount("six")} />
+						</box>
+						{TextOverlay()}
+					</overlay>
+				</box>
+			);
+		}}</With>
+	</box>);
 }
 
 const Clock = () => {
