@@ -41,8 +41,8 @@ app.start({
 			res(JSON.stringify(cbTree));
 			return;
 		}
-		const getCallbacks = (keys: string) => {
-			const keyArray = keys.split(' ');
+		const getCallbacks = (keys: string[]) => {
+			const keyArray = keys[0].split(' ');
 			let currentNode: CallbackTree | CallbackList = cbTree;
 			for (const key of keyArray) {
 				if (currentNode && key in currentNode && !(Array.isArray(currentNode)))
