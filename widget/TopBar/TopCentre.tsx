@@ -1,7 +1,7 @@
 import { createBinding, createComputed, createState } from "ags";
 import Mpris from "gi://AstalMpris";
 import Gtk from "gi://Gtk";
-import { With, Accessor } from "ags"
+import { With } from "ags"
 import Pango from "gi://Pango";
 import { CallbackComp, CallbackTree } from "../../app";
 
@@ -15,36 +15,59 @@ export const TopCentre: CallbackComp = () => {
 	const Media = (p: Mpris.Player) => {
 		type MediaState = {
 			artist: string,
-			title: string
+			title: string,
+			status: Mpris.PlaybackStatus
 		};
 		const artist = createBinding(p, "artist");
+		const status = createBinding(p, "playbackStatus");
 		const title = createBinding(p, "title");
 		const len = createBinding(p, "length");
 		const pos = createBinding(p, "position");
 		const prog = createComputed([len, pos], (len, pos) => pos / len);
-		const ms = createComputed([artist, title], (artist, title) => { return { artist: artist, title: title } });
+		const ms = createComputed([artist, title, status], (artist, title, status) => { return { artist: artist, title: title, status: status } });
 		const NowPlaying = (ms: MediaState) => {
 			if (ms.artist && ms.artist.length) {
-				return (<box>
-					<label
-						label={ms.artist}
-						class="musicSubText"
-						widthChars={10}
-						maxWidthChars={10}
-						halign={Gtk.Align.CENTER}
-						valign={Gtk.Align.CENTER}
-						ellipsize={Pango.EllipsizeMode.END}
-					/>
-					<label
-						label={ms.title}
-						class="musicText"
-						widthChars={20}
-						maxWidthChars={20}
-						valign={Gtk.Align.CENTER}
-						halign={Gtk.Align.START}
-						ellipsize={Pango.EllipsizeMode.END}
-					/>
-				</box>);
+				let sym = "";
+				switch (ms.status) {
+					case Mpris.PlaybackStatus.PAUSED:
+						sym = "󰏤";
+						break;
+					case Mpris.PlaybackStatus.PLAYING:
+						sym = "󰐊";
+						break;
+					case Mpris.PlaybackStatus.STOPPED:
+						sym = "󰓛";
+						break;
+				}
+				return (
+					<box spacing={2}>
+						<label
+							label={sym}
+							class="musicText"
+							widthChars={1}
+							maxWidthChars={1}
+							halign={Gtk.Align.CENTER}
+							valign={Gtk.Align.CENTER}
+						/>
+						<label
+							label={ms.artist}
+							class="musicSubText"
+							widthChars={15}
+							maxWidthChars={15}
+							halign={Gtk.Align.CENTER}
+							valign={Gtk.Align.CENTER}
+							ellipsize={Pango.EllipsizeMode.END}
+						/>
+						<label
+							label={ms.title}
+							class="musicText"
+							widthChars={20}
+							maxWidthChars={20}
+							valign={Gtk.Align.CENTER}
+							halign={Gtk.Align.START}
+							ellipsize={Pango.EllipsizeMode.END}
+						/>
+					</box>);
 			} else {
 				return (<box>
 					<label
