@@ -4,7 +4,6 @@ import { IconCircular } from "../lib/IconCircular";
 import Brightness from "../bindings/brightness";
 import { Accessor, createBinding, createComputed, With } from "ags";
 import Gtk from "gi://Gtk";
-import { createPoll } from "ags/time";
 
 const brightness = Brightness.get_default()
 const wp = WirePlumber.get_default();
@@ -13,10 +12,11 @@ const batt = AstalBattery.get_default();
 const Battery = (b: AstalBattery.Device) => {
 	const percentage = createBinding(b, "percentage");
 	const isBattery = createBinding(b, "is_battery");
-	const batteryInfo: Accessor<[number, boolean]> = createComputed([percentage, isBattery], (p, b) => [p, b]);
+	const charging = createBinding(b, "charging");
+	const batteryInfo: Accessor<[number, boolean, boolean]> = createComputed([percentage, isBattery, charging], (p, b, c) => [p, b, c]);
 
 	return (
-		<box><With value={batteryInfo}>{([percentage, isBattery]) => {
+		<box><With value={batteryInfo}>{([percentage, isBattery, charging]) => {
 			const getNewBrightness = (up: boolean) => {
 				let newBrightness = brightness.screen;
 				if (up) newBrightness += 0.03;
@@ -28,6 +28,7 @@ const Battery = (b: AstalBattery.Device) => {
 			// Value above 0.95 is considered 100%
 			const adjusted = percentage * 100 > 95 ? 1 : percentage;
 			const icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
+			const iconsCharging = ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"];
 			return (
 				// <EventBox
 				// 	onScroll={(_, event) => brightness.screen = getNewBrightness(event.delta_y < 0)}
@@ -36,7 +37,7 @@ const Battery = (b: AstalBattery.Device) => {
 					iconClass="battery-icon"
 					circularClass="battery-progress"
 					value={isBattery ? adjusted : 1}
-					icon={isBattery ? icons[Math.floor(adjusted * 10)] : "󰚥"}
+					icon={isBattery ? ((charging ? iconsCharging : icons)[Math.floor(adjusted * 10)]) : "󰚥"}
 					textClass="battery-text"
 				/>
 				// </EventBox>
