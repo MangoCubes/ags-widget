@@ -29,7 +29,11 @@ export const TopBar: (monId: number) => {
 					homogeneous
 				>
 					<TopLeft />
-					{topCentre.comp}
+					<box>
+						<box class="mikuHairClip"></box>
+						{topCentre.comp}
+						<box class="mikuHairClip"></box>
+					</box>
 					<TopRight />
 				</box>
 			</window>

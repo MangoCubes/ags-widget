@@ -12,3 +12,10 @@
 .progressBar {
     @include base.progress(colours.$teto);
 }
+
+.mikuHairClip {
+    border-left: base.$border solid rgba(colours.$lightGrey, 1);
+    min-width: base.$border;
+    background: colours.$teto;
+    border-right: base.$border solid rgba(colours.$lightGrey, 1);
+}
