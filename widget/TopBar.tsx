@@ -25,16 +25,21 @@ export const TopBar: (monId: number) => {
 				<box
 					halign={Gtk.Align.FILL}
 					orientation={Gtk.Orientation.HORIZONTAL}
-					class="window-bar"
 					homogeneous
 				>
-					<TopLeft />
-					<box>
-						<box class="mikuHairClip"></box>
-						{topCentre.comp}
-						<box class="mikuHairClip"></box>
+					<box class="topleft-container">
+						<TopLeft />
 					</box>
-					<TopRight />
+					<box>
+						<box class="mikuHairClip" />
+						<box class="topcentre-container">
+							{topCentre.comp}
+						</box>
+						<box class="mikuHairClip" />
+					</box>
+					<box class="topright-container">
+						<TopRight />
+					</box>
 				</box>
 			</window>
 		), callbacks: { ...topCentre.callbacks }

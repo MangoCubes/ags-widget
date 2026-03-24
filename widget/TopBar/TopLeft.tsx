@@ -108,7 +108,6 @@ const CurrentWindow = () => {
 			<box
 				halign={Gtk.Align.START}
 				valign={Gtk.Align.CENTER}
-				css="min-width: 200px;"
 			>
 				{w ? windowTitle(w.title, w.app_id) : [(<label
 					halign={Gtk.Align.START}
@@ -136,13 +135,12 @@ export const TopLeft = () => {
 	return (
 		<box
 			spacing={8}
-			class="topleft-container"
+			hexpand
 		>
 			<Logo />
 			<Clock />
 			{WorkspaceCircles()}
 			{CurrentWindow()}
-			<box />
 		</box>
 	);
 }

@@ -1,13 +1,15 @@
 @use 'colours';
 @use 'base';
+@use 'bar';
 
 $wsBlockWidth: 12px;
 $activeCircleWidth: 10px;
 $wsGap: 2px;
 
 .topleft-container {
-  @extend .container;
+  @extend .bar;
   padding-left: base.$pad;
+  border-right: none; 
 }
 
 .ws-text {

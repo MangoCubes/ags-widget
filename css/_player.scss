@@ -1,5 +1,12 @@
 @use 'base';
 @use 'colours';
+@use 'bar';
+
+.topcentre-container {
+  @extend .bar;
+  border-right: none; 
+  border-left: none; 
+}
 
 .musicText {
     @include base.text(colours.$teto);
@@ -14,8 +21,8 @@
 }
 
 .mikuHairClip {
-    border-left: base.$border solid rgba(colours.$lightGrey, 1);
+    border-left: base.$border solid rgba(colours.$darkGrey, 1);
     min-width: base.$border;
     background: colours.$teto;
-    border-right: base.$border solid rgba(colours.$lightGrey, 1);
+    border-right: base.$border solid rgba(colours.$darkGrey, 1);
 }

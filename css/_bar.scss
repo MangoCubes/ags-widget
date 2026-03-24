@@ -2,13 +2,12 @@
 
 .window-bar-container {
   @extend .invisible;
-  /* padding: 10px; */
+    margin: 2px;
 }
 
 .bar {
     @extend .border;
     background: rgba(black, 0.625);
-    margin: 2px;
 }
 
 .window-bar {

@@ -1,9 +1,11 @@
 @use 'colours';
 @use 'base';
+@use 'bar';
 
 .topright-container {
-  @extend .container;
+  @extend .bar;
   padding-right: base.$gap;
+  border-left: none; 
 }
 
 .volume-progress {

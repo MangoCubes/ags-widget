@@ -91,9 +91,9 @@ export const TopRight = () => {
 	// Note: The subcomponent order is reversed
 	return (
 		<box
-			class="topright-container"
 			halign={Gtk.Align.END}
 			spacing={8}
+			hexpand
 		>
 			{wp ? Volume(wp) : null}
 			{Battery(batt)}

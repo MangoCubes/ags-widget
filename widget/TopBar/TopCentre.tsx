@@ -113,7 +113,7 @@ export const TopCentre: CallbackComp = () => {
 		class="musicText"
 	/>)
 	const comp = (
-		<box halign={Gtk.Align.CENTER} hexpand>
+		<box halign={Gtk.Align.CENTER}>
 			<With value={players}>
 				{(p) => {
 					if (p.length) return (
