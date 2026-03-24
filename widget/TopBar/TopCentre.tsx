@@ -109,6 +109,7 @@ export const TopCentre: CallbackComp = () => {
 
 	const players = createBinding(mpris, "players");
 	const nothing = (<label
+		hexpand
 		label="Play something!"
 		class="musicText"
 	/>)
