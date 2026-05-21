@@ -34,6 +34,19 @@
     @include base.text(colours.$len);
 }
 
+.ram-progress {
+    @include base.progress(colours.$rin);
+}
+
+.ram-icon {
+  @extend .icon;
+  color: colours.$rin;
+}
+
+.ram-text {
+    @include base.text(colours.$rin);
+}
+
 .wrapper {
   @extend .invisible;
   padding-top: base.$gap;

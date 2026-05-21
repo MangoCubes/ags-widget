@@ -3,10 +3,38 @@ import AstalBattery from "gi://AstalBattery";
 import Tray from "gi://AstalTray";
 import { IconCircular } from "../lib/IconCircular";
 import { Accessor, createBinding, createComputed, With } from "ags";
+import { createPoll } from "ags/time";
 import Gtk from "gi://Gtk";
 
 const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
+
+const RamUsage = () => {
+	const ram: Accessor<number> = createPoll('', 5000, `free`, s => {
+		// Find the line that contains the memory stats
+		const memLine = s.split('\n').find(line => line.trim().startsWith("Mem:"));
+
+		if (!memLine) {
+			return "N/A";
+		}
+
+		const parts = memLine.trim().split(/\s+/);
+		return parts[2] / parts[1];
+	});
+	return (
+		<box><With value={ram}>{percentage => {
+			return (
+				<IconCircular
+					iconClass="ram-icon"
+					circularClass="ram-progress"
+					value={percentage}
+					icon=""
+					textClass="ram-text"
+				/>
+			);
+		}}</With></box>
+	);
+}
 
 const SysTray = () => {
 	const tray = Tray.get_default();
@@ -98,6 +126,7 @@ export const TopRight = () => {
 			hexpand
 		>
 			<SysTray />
+			<RamUsage />
 			{wp ? Volume(wp) : null}
 			{Battery(batt)}
 		</box>
