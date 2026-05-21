@@ -1,11 +1,35 @@
 import WirePlumber from "gi://AstalWp";
 import AstalBattery from "gi://AstalBattery";
+import Tray from "gi://AstalTray";
 import { IconCircular } from "../lib/IconCircular";
 import { Accessor, createBinding, createComputed, With } from "ags";
 import Gtk from "gi://Gtk";
 
 const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
+
+const SysTray = () => {
+	const tray = Tray.get_default();
+
+	return (
+		<box>
+			<With value={createBinding(tray, "items")}>{(items) => (
+				<box spacing={8} hexpand>
+					{items.map(item => (
+						<button
+							class={"tray-button"}
+							tooltipMarkup={createBinding(item, "tooltipMarkup")}
+							onDestroy={() => item.destroy()}
+							onClicked={(self) => item.activate(0, 0)}
+						>
+							<image gicon={createBinding(item, "gicon")} />
+						</button>
+					))}
+				</box>
+			)}</With>
+		</box>
+	);
+}
 
 const Battery = (b: AstalBattery.Device) => {
 	const percentage = createBinding(b, "percentage");
@@ -68,6 +92,7 @@ export const TopRight = () => {
 			spacing={8}
 			hexpand
 		>
+			<SysTray />
 			{wp ? Volume(wp) : null}
 			{Battery(batt)}
 		</box>
