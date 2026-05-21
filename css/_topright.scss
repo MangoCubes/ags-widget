@@ -47,3 +47,19 @@
   padding: 0;
   margin: 0;
 }
+
+.tray-item {
+  @extend .tray-button;
+  border-bottom: base.$border solid rgba(white, 1);
+}
+
+.tray-active {
+  @extend .tray-button;
+  border-bottom: base.$border solid rgba(colours.$teto, 1);
+}
+
+.tray-attention {
+  @extend .tray-button;
+  border-bottom: base.$border solid rgba(colours.$len, 1);
+}
+

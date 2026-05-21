@@ -11,13 +11,18 @@ const batt = AstalBattery.get_default();
 const SysTray = () => {
 	const tray = Tray.get_default();
 
+	const getLineColour = (status: Tray.Status) => {
+		if (status == Tray.Status.NEEDS_ATTENTION) return "tray-attention";
+		if (status == Tray.Status.ACTIVE) return "tray-active";
+		return "tray-item";
+	};
 	return (
 		<box>
 			<With value={createBinding(tray, "items")}>{(items) => (
 				<box spacing={8} hexpand>
 					{items.map(item => (
 						<button
-							class={"tray-button"}
+							class={getLineColour(createBinding(item, "status"))}
 							tooltipMarkup={createBinding(item, "tooltipMarkup")}
 							onDestroy={() => item.destroy()}
 							onClicked={(self) => item.activate(0, 0)}
