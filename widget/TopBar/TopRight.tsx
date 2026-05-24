@@ -10,7 +10,7 @@ const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
 
 const RamUsage = () => {
-	const ram: Accessor<number> = createPoll('', 5000, `free`, s => {
+	const ram = createPoll('', 5000, `free`, s => {
 		// Find the line that contains the memory stats
 		const memLine = s.split('\n').find(line => line.trim().startsWith("Mem:"));
 
@@ -22,13 +22,17 @@ const RamUsage = () => {
 		return parts[2] / parts[1];
 	});
 	return (
-		<IconCircular
-			iconClass="ram-icon"
-			circularClass="ram-progress"
-			value={ram}
-			icon=""
-			textClass="ram-text"
-		/>
+		<box>
+			<With value={ram}>
+				{(ram) => ram && <IconCircular
+					iconClass="ram-icon"
+					circularClass="ram-progress"
+					value={ram}
+					icon=""
+					textClass="ram-text"
+				/>}
+			</With>
+		</box>
 	);
 }
 
