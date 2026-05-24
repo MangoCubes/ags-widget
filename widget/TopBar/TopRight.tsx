@@ -22,17 +22,13 @@ const RamUsage = () => {
 		return parts[2] / parts[1];
 	});
 	return (
-		<box><With value={ram}>{percentage => {
-			return (
-				<IconCircular
-					iconClass="ram-icon"
-					circularClass="ram-progress"
-					value={percentage}
-					icon=""
-					textClass="ram-text"
-				/>
-			);
-		}}</With></box>
+		<IconCircular
+			iconClass="ram-icon"
+			circularClass="ram-progress"
+			value={ram}
+			icon=""
+			textClass="ram-text"
+		/>
 	);
 }
 

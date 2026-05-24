@@ -26,7 +26,6 @@
             with pkgs;
             [
               typescript
-              nodejs
               bashInteractive
             ]
           );

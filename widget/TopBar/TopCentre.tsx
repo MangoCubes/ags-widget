@@ -2,6 +2,7 @@ import { createBinding, createComputed, createState } from "ags";
 import Mpris from "gi://AstalMpris";
 import Gtk from "gi://Gtk";
 import { With } from "ags"
+import { ProgressBar } from "../lib/ProgressBar";
 import Pango from "gi://Pango";
 import { CallbackComp, CallbackTree } from "../../app";
 
@@ -94,9 +95,9 @@ export const TopCentre: CallbackComp = () => {
 				</box>);
 			}
 		};
-		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.CENTER} vexpand>
+		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
 			<box vexpand hexpand><With value={ms}>{ms => NowPlaying(ms)}</With></box>
-			<box><With value={prog}>{prog => <slider hexpand class="progressBar" value={prog} />}</With></box>
+			<ProgressBar hexpand className="progressBar" value={prog} />
 		</box>
 
 		// return (<box

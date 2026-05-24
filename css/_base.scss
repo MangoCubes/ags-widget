@@ -70,24 +70,8 @@ $workspaceCount: 6;
   font-size: $iconSize;
 }
 
-@mixin progress($fg, $bg: transparent) {
-    all: unset;
-    min-height: $border;
-    background: $bg;
-
-    /* border-top: 1px solid $fg; */
-    /* border-left: 1px solid $fg; */
-    trough {
-        all: unset;
-        min-height: $border;
-    }
-
-    highlight {
-        all: unset;
-        background-color: $fg;
-    }
-
-    slider {
-        all: unset;
-    }
+@mixin progress($fg, $bg: colours.$darkGrey) {
+  min-height: $border;
+  background-color: $bg;
+  color: $fg;
 }
