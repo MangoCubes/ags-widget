@@ -75,7 +75,7 @@ export class Syncthing extends GObject.Object {
 
 	async #init() {
 		try {
-			this.#apiKey = await execAsync(`secret-tool lookup Path '/Scripts/ags'`);
+			this.#apiKey = await execAsync(`secret-tool lookup Path '/Scripts/Syncthing API Key'`);
 		} catch {
 			console.log("Syncthing: Could not find API key");
 			return;
