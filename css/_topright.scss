@@ -76,3 +76,16 @@
   border-bottom: base.$border solid rgba(colours.$len, 1);
 }
 
+.syncthing-progress {
+    @include base.progress(colours.$miku);
+}
+
+.syncthing-icon {
+  @extend .icon;
+  color: colours.$miku;
+}
+
+.syncthing-text {
+    @include base.text(colours.$miku);
+}
+

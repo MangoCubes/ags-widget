@@ -2,9 +2,11 @@ import WirePlumber from "gi://AstalWp";
 import AstalBattery from "gi://AstalBattery";
 import Tray from "gi://AstalTray";
 import { IconCircular } from "../lib/IconCircular";
+import { ProgressBar } from "../lib/ProgressBar";
 import { Accessor, createBinding, createComputed, With } from "ags";
 import { createPoll } from "ags/time";
 import Gtk from "gi://Gtk";
+import { Syncthing } from "../bindings/syncthing";
 
 const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
@@ -61,6 +63,53 @@ const SysTray = () => {
 				</box>
 			)}</With>
 		</box>
+	);
+}
+
+const SyncthingStatus = () => {
+	const st = Syncthing.get_default();
+	const available = createBinding(st, "available");
+	const connected = createBinding(st, "connectedDevices");
+	const total = createBinding(st, "totalDevices");
+	const completion = createBinding(st, "completion");
+	const syncing = createBinding(st, "syncing");
+	const info: Accessor<[boolean, number, number, number, boolean]> = createComputed(
+		[available, connected, total, completion, syncing],
+		(a, c, t, comp, s) => [a, c, t, comp, s]
+	);
+
+	return (
+		<box><With value={info}>{([available, connected, total, completion, syncing]) => {
+			if (!available) return null;
+			const icon = syncing ? "󰁪" : connected > 0 ? "󰌘" : "󰌙";
+			const progress = completion / 100;
+			return (
+				<box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
+					<box
+						valign={Gtk.Align.CENTER}
+						halign={Gtk.Align.CENTER}
+						vexpand
+					>
+						<label
+							widthChars={1}
+							maxWidthChars={1}
+							class="syncthing-icon"
+							label={icon}
+						/>
+						<label
+							widthChars={3}
+							maxWidthChars={3}
+							class="syncthing-text"
+							label={syncing
+								? ` ${Math.floor(completion).toString().padStart(2, "0")}%`
+								: ` ${connected}/${total}`
+							}
+						/>
+					</box>
+					<ProgressBar className="syncthing-progress" value={progress} />
+				</box>
+			);
+		}}</With></box>
 	);
 }
 
@@ -126,6 +175,7 @@ export const TopRight = () => {
 			hexpand
 		>
 			<SysTray />
+			<SyncthingStatus />
 			<RamUsage />
 			{wp ? Volume(wp) : null}
 			{Battery(batt)}
