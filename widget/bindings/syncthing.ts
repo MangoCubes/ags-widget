@@ -74,12 +74,16 @@ export class Syncthing extends GObject.Object {
 	}
 
 	async #init() {
-		try {
-			this.#apiKey = await execAsync(`secret-tool lookup Path '/Scripts/Syncthing API Key'`);
-		} catch {
-			console.log("Syncthing: Could not find API key");
-			return;
-		}
+		this.#apiKey = null;
+		const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+		while (!this.#apiKey) {
+			try {
+				this.#apiKey = await execAsync(`secret-tool lookup Path '/Scripts/Syncthing API Key'`);
+			} catch {
+				console.log("Syncthing: Could not find API key");
+				sleep(5000);
+			}
+		};
 
 		await this.#poll();
 		GLib.timeout_add(GLib.PRIORITY_DEFAULT, POLL_INTERVAL_MS, () => {
