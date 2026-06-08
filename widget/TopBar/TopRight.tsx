@@ -68,28 +68,46 @@ const SysTray = () => {
 
 const SyncthingStatus = () => {
 	const st = Syncthing.get_default();
+	const hasKey = createBinding(st, "hasKey");
 	const available = createBinding(st, "available");
 	const connected = createBinding(st, "connectedDevices");
 	const total = createBinding(st, "totalDevices");
 	const completion = createBinding(st, "completion");
 	const syncing = createBinding(st, "syncing");
-	const info: Accessor<[boolean, number, number, number, boolean]> = createComputed(
-		[available, connected, total, completion, syncing],
-		(a, c, t, comp, s) => [a, c, t, comp, s]
+	const info: Accessor<[boolean, boolean, number, number, number, boolean]> = createComputed(
+		[hasKey, available, connected, total, completion, syncing],
+		(h, a, c, t, comp, s) => [h, a, c, t, comp, s]
 	);
 
 	return (
-		<box><With value={info}>{([available, connected, total, completion, syncing]) => {
-			if (!available) return null;
+		<box><With value={info}>{([hasKey, available, connected, total, completion, syncing]) => {
+			if (!hasKey) {
+				return (
+					<box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
+						<box valign={Gtk.Align.CENTER} halign={Gtk.Align.CENTER} vexpand>
+							<label class="syncthing-icon" label="󰌊" />
+							<label class="syncthing-text" label=" KEY" />
+						</box>
+						<ProgressBar className="syncthing-progress" value={0} />
+					</box>
+				);
+			}
+			if (!available) {
+				return (
+					<box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
+						<box valign={Gtk.Align.CENTER} halign={Gtk.Align.CENTER} vexpand>
+							<label class="syncthing-icon" label="" />
+							<label class="syncthing-text" label=" OFF" />
+						</box>
+						<ProgressBar className="syncthing-progress" value={0} />
+					</box>
+				);
+			}
 			const icon = syncing ? "󰁪" : connected > 0 ? "󰌘" : "󰌙";
 			const progress = completion / 100;
 			return (
 				<box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
-					<box
-						valign={Gtk.Align.CENTER}
-						halign={Gtk.Align.CENTER}
-						vexpand
-					>
+					<box valign={Gtk.Align.CENTER} halign={Gtk.Align.CENTER} vexpand>
 						<label
 							widthChars={1}
 							maxWidthChars={1}

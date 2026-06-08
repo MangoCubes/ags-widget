@@ -20,11 +20,15 @@ export class Syncthing extends GObject.Object {
 	}
 
 	#apiKey: string | null = null;
+	#hasKey = false;
 	#available = false;
 	#connectedDevices = 0;
 	#totalDevices = 0;
 	#completion = 100;
 	#syncing = false;
+
+	@getter(Boolean)
+	get hasKey() { return this.#hasKey; }
 
 	@getter(Boolean)
 	get available() { return this.#available; }
@@ -79,9 +83,11 @@ export class Syncthing extends GObject.Object {
 		while (!this.#apiKey) {
 			try {
 				this.#apiKey = await execAsync(`secret-tool lookup Path '/Scripts/Syncthing API Key'`);
+				this.#hasKey = true;
+				this.notify("has_key");
 			} catch {
 				console.log("Syncthing: Could not find API key");
-				sleep(5000);
+				await sleep(5000);
 			}
 		};
 
