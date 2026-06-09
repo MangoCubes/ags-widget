@@ -49,7 +49,7 @@ const SysTray = () => {
 	return (
 		<box>
 			<With value={createBinding(tray, "items")}>{(items) => (
-				<box spacing={8} hexpand>
+				<box spacing={4} hexpand>
 					{items.map(item => (
 						<button
 							class={getLineColour(createBinding(item, "status"))}
@@ -189,7 +189,7 @@ export const TopRight = () => {
 	return (
 		<box
 			halign={Gtk.Align.END}
-			spacing={8}
+			spacing={4}
 			hexpand
 		>
 			<SysTray />
