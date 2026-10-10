@@ -19,7 +19,7 @@ const WorkspaceCircles = () => {
 	const wss = createBinding(niri, "workspaces");
 	const ws = createBinding(niri, "focusedWorkspace");
 	const windows = createBinding(niri, "windows");
-	const wsInfo: Accessor<[Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]> = createComputed([wss, ws, windows], (wss, ws, windows) => [wss, ws, windows]);
+	const wsInfo: Accessor<[Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]> = createComputed(() => [wss(), ws(), windows()]);
 	return (<box>
 		<With value={wsInfo}>{([ws, focused, windows]: [Niri.Workspace[], Niri.Workspace | null, Niri.Window[]]) => {
 			const getWindowCount = (name: string) => {

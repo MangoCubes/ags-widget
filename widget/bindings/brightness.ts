@@ -1,5 +1,5 @@
 import { readFileAsync, monitorFile } from "ags/file"
-import { getter, property, register } from "ags/gobject"
+import { getter, register } from "ags/gobject"
 import { exec, execAsync } from "ags/process"
 import GObject from "gi://GObject"
 
