@@ -1,9 +1,9 @@
 vim.api.nvim_create_user_command('RunAGS', function()
-	vim.cmd('silent !ags run -d ~/Sync/NixConfig/desktop/packages/home/ags &')
+	vim.cmd('silent !ags run -d ./ &')
 end, {})
 
 vim.api.nvim_create_user_command('RunAGSAttached', function()
-	vim.cmd('silent !term sh -c "ags run -d ~/Sync/NixConfig/desktop/packages/home/ags" &')
+	vim.cmd('silent !term sh -c "ags run -d ./" &')
 end, {})
 
 vim.api.nvim_create_user_command('StopAGS', function()

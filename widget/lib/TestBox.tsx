@@ -1,1 +1,1 @@
-export const TestBox = () => <box clickThrough={true} className="test-box" />
+export const TestBox = () => <box canTarget={false} class="test-box" />

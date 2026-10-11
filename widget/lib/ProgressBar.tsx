@@ -1,6 +1,6 @@
-import { With, Binding } from "ags";
+import { Accessor, With } from "ags";
 
-export const ProgressBar = (props: { value: number | Binding<number>, className: string }) => {
+export const ProgressBar = (props: { value: number | Accessor<number>, className: string }) => {
 	const getCss = (n: number) => {
 		if (n < 0) n = 0;
 		else if (n > 1) n = 1;

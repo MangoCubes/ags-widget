@@ -1,8 +1,7 @@
 import Gtk from "gi://Gtk";
 import { ProgressBar } from "./ProgressBar";
-import { Binding } from "ags";
 
-export const IconCircular = (props: { value: number | Binding<number>, icon: string, iconClass: string, circularClass: string, textClass: string }) => {
+export const IconCircular = (props: { value: number, icon: string, iconClass: string, circularClass: string, textClass: string }) => {
 	return (
 		<box orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
 			<box
