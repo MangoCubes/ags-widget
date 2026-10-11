@@ -2,6 +2,8 @@ import app from "ags/gtk4/app"
 import { TopBar } from "./widget/TopBar";
 import scss from "./css/style.scss";
 import GObject from "ags/gobject";
+import { Gdk, Gtk } from "ags/gtk4";
+import { createRoot, onCleanup } from "ags";
 
 export type CallbackList = (() => null | string)[];
 export type CallbackTree = { [key: string]: CallbackTree | CallbackList };
@@ -9,6 +11,8 @@ export type CallbackComp = () => {
 	comp: GObject.Object;
 	callbacks: CallbackTree;
 };
+
+type Bar = ReturnType<typeof TopBar> & { monitor: Gdk.Monitor; dispose: () => void };
 
 let cbTree: CallbackTree = {};
 
@@ -69,12 +73,33 @@ app.start({
 		else return res("Unknown command.");
 	},
 	main() {
-		app.get_monitors().map((a, b) => {
-			const { comp, callbacks } = TopBar(b);
-			const mergeRes = deepMerge(callbacks, cbTree);
-			if (!mergeRes) console.error("Failed to merge callback tree!");
-			else cbTree = mergeRes;
-			return comp;
+		let bars: Bar[] = [];
+		const createBar = (monitor: Gdk.Monitor): Bar => createRoot((dispose) => ({
+			monitor, dispose, ...TopBar(monitor),
+		}));
+		const destroyBar = (bar: Bar) => {
+			if (bar.comp instanceof Gtk.Window) bar.comp.destroy();
+			bar.dispose();
+		};
+		const syncBars = () => {
+			const monitors = app.get_monitors();
+			bars.filter(({ monitor }) => !monitors.includes(monitor)).forEach(destroyBar);
+			const connected = bars.filter(({ monitor }) => monitors.includes(monitor));
+			bars = connected.concat(monitors
+				.filter((monitor) => !connected.some((bar) => bar.monitor === monitor))
+				.map(createBar));
+			const callbacks = bars.reduce<CallbackTree | null>(
+				(tree, bar) => tree && deepMerge(bar.callbacks, tree), {}
+			);
+			if (callbacks) cbTree = callbacks;
+			else console.error("Failed to merge callback tree!");
+		};
+		const monitorHandler = app.connect("notify::monitors", syncBars);
+		syncBars();
+		onCleanup(() => {
+			app.disconnect(monitorHandler);
+			bars.forEach(destroyBar);
+			cbTree = {};
 		});
 	},
 })

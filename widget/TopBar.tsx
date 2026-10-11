@@ -2,13 +2,10 @@ import { TopLeft } from "./TopBar/TopLeft"
 import { TopRight } from "./TopBar/TopRight"
 import { TopCentre } from "./TopBar/TopCentre"
 import Astal from "gi://Astal"
-import { Gtk } from "ags/gtk4"
+import { Gdk, Gtk } from "ags/gtk4"
 import { CallbackTree } from "../app"
 import GObject from "ags/gobject"
-export const TopBar: (monId: number) => {
-	comp: GObject.Object;
-	callbacks: CallbackTree;
-} = (monId) => {
+export const TopBar = (monitor: Gdk.Monitor): { comp: GObject.Object; callbacks: CallbackTree } => {
 	const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
 	const topCentre = TopCentre();
@@ -20,7 +17,7 @@ export const TopBar: (monId: number) => {
 				anchor={TOP | LEFT | RIGHT}
 				exclusivity={Astal.Exclusivity.EXCLUSIVE}
 				class="window-bar-container"
-				monitor={monId}
+				gdkmonitor={monitor}
 			>
 				<box
 					halign={Gtk.Align.FILL}
@@ -45,6 +42,3 @@ export const TopBar: (monId: number) => {
 		), callbacks: { ...topCentre.callbacks }
 	};
 }
-// <TopLeft />
-// <TopCentre />
-

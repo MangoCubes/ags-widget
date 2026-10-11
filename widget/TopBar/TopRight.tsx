@@ -54,7 +54,6 @@ const SysTray = () => {
 						<button
 							class={getLineColour(createBinding(item, "status"))}
 							tooltipMarkup={createBinding(item, "tooltipMarkup")}
-							onDestroy={() => item.destroy()}
 							onClicked={(self) => item.activate(0, 0)}
 						>
 							<image gicon={createBinding(item, "gicon")} />
