@@ -24,8 +24,8 @@ export const TopCentre: CallbackComp = () => {
 		const title = createBinding(p, "title");
 		const len = createBinding(p, "length");
 		const pos = createBinding(p, "position");
-		const prog = createComputed([len, pos], (len, pos) => pos / len);
-		const ms = createComputed([artist, title, status], (artist, title, status) => { return { artist: artist, title: title, status: status } });
+		const prog = createComputed(() => pos() / len());
+		const ms = createComputed<MediaState>(() => ({ artist: artist(), title: title(), status: status() }));
 		const NowPlaying = (ms: MediaState) => {
 			if (ms.artist && ms.artist.length) {
 				let sym = "";
@@ -97,7 +97,7 @@ export const TopCentre: CallbackComp = () => {
 		};
 		return <box spacing={1} orientation={Gtk.Orientation.VERTICAL} halign={Gtk.Align.FILL} vexpand>
 			<box vexpand hexpand><With value={ms}>{ms => NowPlaying(ms)}</With></box>
-			<ProgressBar hexpand className="progressBar" value={prog} />
+			<ProgressBar className="progressBar" value={prog} />
 		</box>
 
 		// return (<box
@@ -134,7 +134,7 @@ export const TopCentre: CallbackComp = () => {
 		</box>
 	);
 	const changePid = (original: number) => {
-		const playerLen = players.get().length;
+		const playerLen = players.peek().length;
 		original = original % playerLen;
 		if (original < 0) original += playerLen;
 		return original;
@@ -149,7 +149,7 @@ export const TopCentre: CallbackComp = () => {
 				setPid(pid => changePid(pid - 1));
 				return null;
 			}],
-			get: [() => players.get()[pid.get()]?.bus_name.replace("org.mpris.MediaPlayer2.", "") ?? null]
+			get: [() => players.peek()[pid.peek()]?.bus_name.replace("org.mpris.MediaPlayer2.", "") ?? null]
 		}
 	};
 
@@ -158,4 +158,3 @@ export const TopCentre: CallbackComp = () => {
 		callbacks: callbacks,
 	};
 }
-

@@ -12,21 +12,19 @@ const wp = WirePlumber.get_default();
 const batt = AstalBattery.get_default();
 
 const RamUsage = () => {
-	const ram = createPoll('', 5000, `free`, s => {
+	const ram = createPoll(0, 5000, "free", (s) => {
 		// Find the line that contains the memory stats
 		const memLine = s.split('\n').find(line => line.trim().startsWith("Mem:"));
 
-		if (!memLine) {
-			return "N/A";
-		}
+		if (!memLine) return 0;
 
 		const parts = memLine.trim().split(/\s+/);
-		return parts[2] / parts[1];
+		return Number(parts[2]) / Number(parts[1]);
 	});
 	return (
 		<box>
 			<With value={ram}>
-				{(ram) => ram && <IconCircular
+				{(ram) => ram > 0 && <IconCircular
 					iconClass="ram-icon"
 					circularClass="ram-progress"
 					value={ram}
@@ -41,20 +39,15 @@ const RamUsage = () => {
 const SysTray = () => {
 	const tray = Tray.get_default();
 
-	const getLineColour = (status: Tray.Status) => {
-		if (status == Tray.Status.NEEDS_ATTENTION) return "tray-attention";
-		if (status == Tray.Status.ACTIVE) return "tray-active";
-		return "tray-item";
-	};
 	return (
 		<box>
-			<With value={createBinding(tray, "items")}>{(items) => (
+			<With value={createBinding<Tray.Tray, "items">(tray, "items")}>{(items) => (
 				<box spacing={4} hexpand>
 					{items.map(item => (
 						<button
-							class={getLineColour(createBinding(item, "status"))}
+							class="tray-item"
 							tooltipMarkup={createBinding(item, "tooltipMarkup")}
-							onClicked={(self) => item.activate(0, 0)}
+							onClicked={() => item.activate(0, 0)}
 						>
 							<image gicon={createBinding(item, "gicon")} />
 						</button>
@@ -73,10 +66,7 @@ const SyncthingStatus = () => {
 	const total = createBinding(st, "totalDevices");
 	const completion = createBinding(st, "completion");
 	const syncing = createBinding(st, "syncing");
-	const info: Accessor<[boolean, boolean, number, number, number, boolean]> = createComputed(
-		[hasKey, available, connected, total, completion, syncing],
-		(h, a, c, t, comp, s) => [h, a, c, t, comp, s]
-	);
+	const info: Accessor<[boolean, boolean, number, number, number, boolean]> = createComputed(() => [hasKey(), available(), connected(), total(), completion(), syncing()]);
 
 	return (
 		<box><With value={info}>{([hasKey, available, connected, total, completion, syncing]) => {
@@ -134,7 +124,7 @@ const Battery = (b: AstalBattery.Device) => {
 	const percentage = createBinding(b, "percentage");
 	const isBattery = createBinding(b, "is_battery");
 	const charging = createBinding(b, "charging");
-	const batteryInfo: Accessor<[number, boolean, boolean]> = createComputed([percentage, isBattery, charging], (p, b, c) => [p, b, c]);
+	const batteryInfo: Accessor<[number, boolean, boolean]> = createComputed(() => [percentage(), isBattery(), charging()]);
 
 	return (
 		<box><With value={batteryInfo}>{([percentage, isBattery, charging]) => {

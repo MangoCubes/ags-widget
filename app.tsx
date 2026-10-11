@@ -40,8 +40,8 @@ const deepMerge = (newTree: CallbackTree, oldTree: CallbackTree): CallbackTree |
 
 app.start({
 	css: scss,
-	requestHandler(request: string, res: (response: any) => void) {
-		if (request === "show") {
+	requestHandler(request, res) {
+		if (request[0] === "show") {
 			res(JSON.stringify(cbTree));
 			return;
 		}
