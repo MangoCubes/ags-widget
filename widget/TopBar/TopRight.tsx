@@ -36,6 +36,29 @@ const RamUsage = () => {
 	);
 }
 
+const CpuUsage = () => {
+	const stat = createPoll({ idle: 0, total: 0, usage: 0 }, 2000, "cat /proc/stat", (s, prev) => {
+		const fields = s.split('\n')[0].trim().split(/\s+/).slice(1, 9).map(Number);
+		const idle = fields[3] + fields[4];
+		const total = fields.reduce((a, b) => a + b, 0);
+		const dTotal = total - prev.total;
+		return { idle, total, usage: dTotal > 0 ? 1 - (idle - prev.idle) / dTotal : 0 };
+	});
+	return (
+		<box>
+			<With value={stat.as(s => s.usage)}>
+				{(cpu) => <IconCircular
+					iconClass="cpu-icon"
+					circularClass="cpu-progress"
+					value={cpu}
+					icon=""
+					textClass="cpu-text"
+				/>}
+			</With>
+		</box>
+	);
+}
+
 const SysTray = () => {
 	const tray = Tray.get_default();
 
@@ -183,6 +206,7 @@ export const TopRight = () => {
 		>
 			<SysTray />
 			<SyncthingStatus />
+			<CpuUsage />
 			<RamUsage />
 			{wp ? Volume(wp) : null}
 			{Battery(batt)}

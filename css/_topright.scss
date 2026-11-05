@@ -47,6 +47,19 @@
     @include base.text(colours.$rin);
 }
 
+.cpu-progress {
+    @include base.progress(colours.$una);
+}
+
+.cpu-icon {
+  @extend .icon;
+  color: colours.$una;
+}
+
+.cpu-text {
+    @include base.text(colours.$una);
+}
+
 .wrapper {
   @extend .invisible;
   padding-top: base.$gap;
